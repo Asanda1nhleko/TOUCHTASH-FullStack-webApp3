@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book Appointment — touchTash</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <style>
+    body { background: #0a0a0a; color: #fff; font-family: 'Segoe UI', sans-serif; }
+    .navbar { background: #111 !important; border-bottom: 1px solid #333; }
+    .btn-gold { background: #c9a84c; color: #000; border: none; padding: 10px 25px; border-radius: 5px; font-weight: bold; }
+    .btn-gold:hover { background: #b8943a; color: #000; }
+    .btn-outline-gold { border: 1px solid #c9a84c; color: #c9a84c; background: transparent; padding: 8px 20px; border-radius: 5px; }
+    .btn-outline-gold:hover { background: #c9a84c; color: #000; }
+    .card-dark { background: #1a1a1a; border-radius: 12px; padding: 25px; margin-bottom: 20px; border: 1px solid #333; }
+    .barber-card { background: #222; border-radius: 10px; padding: 15px; text-align: center; cursor: pointer; transition: all 0.2s; border: 2px solid transparent; margin-bottom: 15px; }
+    .barber-card:hover { transform: scale(1.02); background: #2a2a2a; }
+    .barber-card.selected { border-color: #c9a84c; background: #2a2a2a; }
+    .barber-card h6 { color: #fff; margin-top: 10px; margin-bottom: 5px; }
+    .barber-card .text-muted { color: #aaa !important; }
+    .barber-card .text-warning { color: #c9a84c !important; }
+    .barber-card img { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid #444; background: #333; }
+    .time-slot { background: #222; border-radius: 8px; padding: 10px; text-align: center; cursor: pointer; transition: all 0.2s; border: 1px solid #444; margin: 5px; color: #fff; }
+    .time-slot:hover:not(.disabled) { background: #c9a84c; color: #000; border-color: #c9a84c; }
+    .time-slot.disabled { opacity: 0.4; cursor: not-allowed; background: #2a2a2a; color: #888; }
+    .time-slot.selected { background: #c9a84c; color: #000; border-color: #c9a84c; }
+    .form-control { background: #222; border: 1px solid #444; color: #fff; border-radius: 8px; padding: 10px; }
+    .form-control:focus { background: #222; border-color: #c9a84c; color: #fff; box-shadow: none; outline: none; }
+    .form-control:read-only { background: #2a2a2a; color: #ddd; }
+    .form-label { color: #ccc; font-weight: 500; margin-bottom: 8px; }
+    .text-muted { color: #aaa !important; }
+    .text-warning { color: #c9a84c !important; }
+    hr { border-color: #333; }
+    h4, h5 { color: #fff; }
+    .spinner-border { width: 1rem; height: 1rem; }
+    #timeSlotsGrid .time-slot { font-size: 14px; font-weight: 500; }
+    #timeSlotsGrid .time-slot.disabled small { color: #888; }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="index.html" style="font-size: 24px; font-weight: bold; color: #fff;">touch<span style="color: #c9a84c;">Tash</span></a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav mx-auto">
+        <li class="nav-item"><a class="nav-link" href="index.html" style="color: #aaa;">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="booking.html" style="color: #c9a84c;">Book</a></li>
+        <li class="nav-item"><a class="nav-link" href="dashboard.html" style="color: #aaa;">Dashboard</a></li>
+      </ul>
+      <div id="navButtons">
+        <a href="login.html" class="btn btn-outline-gold btn-sm">Sign In</a>
+        <a href="register.html" class="btn btn-gold btn-sm ms-2">Register</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<div class="container mt-4">
+  <div class="text-center mb-4">
+    <h1 style="color: #fff;">Book Your Appointment</h1>
+    <p class="text-muted">Choose your barber, service, date and time — confirmed in seconds.</p>
+  </div>
+
+  <div class="row">
+    <!-- LEFT COLUMN - BOOKING FORM -->
+    <div class="col-md-7">
+      <div class="card-dark">
+        <h4><i class="bi bi-person-circle me-2 text-warning"></i> Your Details</h4>
+        <hr>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Full Name</label>
+            <input type="text" id="customerName" class="form-control" readonly>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" id="customerEmail" class="form-control" readonly>
+          </div>
+        </div>
+
+        <h4 class="mt-3"><i class="bi bi-scissors me-2 text-warning"></i> Select Service</h4>
+        <hr>
+        <select id="serviceSelect" class="form-control mb-3">
+          <option value="">Loading services...</option>
+        </select>
+
+        <h4 class="mt-3"><i class="bi bi-calendar me-2 text-warning"></i> Date & Time</h4>
+        <hr>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Date</label>
+            <input type="date" id="appointmentDate" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Available Time Slots</label>
+            <div id="timeSlotsGrid" class="row g-1">
+              <div class="col-12 text-center py-3">
+                <span class="text-muted">Select a barber and date first</span>
+              </div>
+            </div>
+            <input type="hidden" id="selectedTime">
+          </div>
+        </div>
+
+        <h4 class="mt-3"><i class="bi bi-chat-text me-2 text-warning"></i> Additional Notes</h4>
+        <hr>
+        <textarea id="bookingNotes" class="form-control" rows="3" placeholder="Any special requests? (Optional)"></textarea>
+
+        <button id="submitBtn" class="btn btn-gold w-100 mt-4 py-2 fw-bold">Confirm Booking</button>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN - BARBERS -->
+    <div class="col-md-5">
+      <div class="card-dark">
+        <h4><i class="bi bi-people me-2 text-warning"></i> Select a Barber</h4>
+        <p class="text-muted small">Click to choose your preferred barber</p>
+        <div id="barbersContainer" class="row">
+          <div class="col-12 text-center py-3">
+            <div class="spinner-border text-warning spinner-border-sm me-2"></div>
+            <span class="text-muted">Loading barbers...</span>
+          </div>
+        </div>
+        <input type="hidden" id="selectedBarber">
+      </div>
+
+      <!-- STYLE RECOMMENDER -->
+      <div class="card-dark">
+        <h5><i class="bi bi-cpu text-warning me-2"></i> Style Recommender</h5>
+        <div class="mb-3">
+          <label class="form-label">Face Shape</label>
+          <select id="faceShape" class="form-control">
+            <option value="">-- Select face shape --</option>
+            <option value="oval">Oval</option>
+            <option value="round">Round</option>
+            <option value="square">Square</option>
+            <option value="heart">Heart</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Hair Type</label>
+          <select id="hairType" class="form-control">
+            <option value="">-- Select hair type --</option>
+            <option value="straight">Straight</option>
+            <option value="wavy">Wavy</option>
+            <option value="curly">Curly</option>
+            <option value="coarse">Coarse</option>
+          </select>
+        </div>
+        <button id="recBtn" class="btn btn-outline-gold w-100">Get Recommendations</button>
+        <div id="recResults" class="mt-3"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="text-center mt-5 py-4" style="background: #111; border-top: 1px solid #333;">
+  <p class="text-muted small mb-0">&copy; 2025 touchTash. All rights reserved.</p>
+</footer>
+
+<script>
+// ============================================
+// BOOKING SCRIPT – NO EMOJIS + IMAGE FIX
+// ============================================
+
+const API_BASE = 'http://localhost:5000/api';
+
+// ---- AUTH HELPERS ----
+function getToken() {
+    return localStorage.getItem('tt_token');
+}
+function getUser() {
+    try {
+        const user = localStorage.getItem('tt_user');
+        return user ? JSON.parse(user) : null;
+    } catch {
+        return null;
+    }
+}
+
+// ---- UPDATE NAVBAR & CHECK LOGIN ----
+function checkLogin() {
+    const token = getToken();
+    const user = getUser();
+    const navDiv = document.getElementById('navButtons');
+    
+    if (!token || !user) {
+        window.location.href = 'login.html';
+        return false;
+    }
+    
+    navDiv.innerHTML = `
+        <span class="text-warning me-2">${user.full_name || user.name}</span>
+        <a href="dashboard.html" class="btn btn-outline-gold btn-sm">Dashboard</a>
+        <button onclick="logout()" class="btn btn-gold btn-sm ms-2">Sign Out</button>
+    `;
+    
+    document.getElementById('customerName').value = user.full_name || '';
+    document.getElementById('customerEmail').value = user.email || '';
+    return true;
+}
+
+function logout() {
+    localStorage.clear();
+    window.location.href = 'index.html';
+}
+
+// ---- LOAD BARBERS (with robust image handling) ----
+async function loadBarbers() {
+    try {
+        const response = await fetch(`${API_BASE}/barbers`);
+        const data = await response.json();
+        const barbers = data.barbers || [];
+        const container = document.getElementById('barbersContainer');
+        
+        if (!barbers.length) {
+            container.innerHTML = '<div class="col-12 text-center text-danger">No barbers found</div>';
+            return;
+        }
+        
+        container.innerHTML = '';
+        barbers.forEach(barber => {
+            const name = barber.barber_name || barber.name || 'Barber';
+            const specialty = barber.specialty || barber.speciality || 'Professional Barber';
+            const rating = barber.rating || 4.8;
+            
+            // Build image URL – ensure it has the /uploads/ prefix
+            let imageHtml = '';
+            if (barber.image_url) {
+                let imagePath = barber.image_url;
+                // If it doesn't start with /uploads/, add it
+                if (!imagePath.startsWith('/uploads/')) {
+                    imagePath = `/uploads/${imagePath}`;
+                }
+                const fullUrl = `${API_BASE}${imagePath}`;
+                imageHtml = `<img src="${fullUrl}" alt="${name}" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'70\\' height=\\'70\\' viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'%23666\\' stroke-width=\\'2\\'%3E%3Ccircle cx=\\'12\\' cy=\\'8\\' r=\\'4\\'/%3E%3Cpath d=\\'M5.2 20h13.6c.7 0 1.2-.6 1-1.3C19.4 15.2 16.3 13 12 13s-7.4 2.2-8.8 5.7c-.2.7.3 1.3 1 1.3z\\'/%3E%3C/svg%3E';">`;
+            } else {
+                imageHtml = `<i class="bi bi-person-circle" style="font-size: 2.5rem; color: #c9a84c;"></i>`;
+            }
+            
+            container.innerHTML += `
+                <div class="col-6">
+                    <div class="barber-card" data-id="${barber.id}" data-name="${name}">
+                        ${imageHtml}
+                        <h6>${name}</h6>
+                        <small class="text-muted">${specialty}</small>
+                        <div class="small text-warning mt-1">${rating} / 5</div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        // Add click listeners
+        document.querySelectorAll('.barber-card').forEach(card => {
+            card.addEventListener('click', function() {
+                document.querySelectorAll('.barber-card').forEach(c => c.classList.remove('selected'));
+                this.classList.add('selected');
+                document.getElementById('selectedBarber').value = this.dataset.id;
+                
+                const date = document.getElementById('appointmentDate').value;
+                if (date) loadTimeSlots(date, this.dataset.id);
+                else {
+                    document.getElementById('timeSlotsGrid').innerHTML = `
+                        <div class="col-12 text-center py-3">
+                            <span class="text-muted">Select a date first</span>
+                        </div>
+                    `;
+                }
+            });
+        });
+    } catch (error) {
+        console.error('Error loading barbers:', error);
+        document.getElementById('barbersContainer').innerHTML = '<div class="col-12 text-center text-danger">Error loading barbers</div>';
+    }
+}
+
+// ---- LOAD SERVICES ----
+async function loadServices() {
+    try {
+        const response = await fetch(`${API_BASE}/services`);
+        const data = await response.json();
+        const services = data.services || [];
+        const select = document.getElementById('serviceSelect');
+        
+        if (!services.length) {
+            select.innerHTML = '<option value="">No services found</option>';
+            return;
+        }
+        
+        select.innerHTML = '<option value="">-- Select a service --</option>';
+        services.forEach(service => {
+            const name = service.service_name || service.name || 'Service';
+            const price = service.price || 0;
+            const duration = service.duration_minutes || service.duration || 30;
+            select.innerHTML += `<option value="${service.id}" data-price="${price}">${name} - R${price} (${duration} min)</option>`;
+        });
+    } catch (error) {
+        console.error('Error loading services:', error);
+        document.getElementById('serviceSelect').innerHTML = '<option value="">Error loading services</option>';
+    }
+}
+
+// ---- LOAD TIME SLOTS ----
+async function loadTimeSlots(date, barberId) {
+    const container = document.getElementById('timeSlotsGrid');
+    
+    if (!date || !barberId) {
+        container.innerHTML = '<div class="col-12 text-center py-3"><span class="text-muted">Select a barber and date first</span></div>';
+        return;
+    }
+    
+    container.innerHTML = '<div class="col-12 text-center py-3"><div class="spinner-border spinner-border-sm text-warning me-2"></div><span class="text-muted">Loading available slots...</span></div>';
+    
+    try {
+        const token = getToken();
+        const headers = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+        
+        const url = `${API_BASE}/bookings/available-slots?date=${date}&barber_id=${barberId}`;
+        let slots = [];
+        try {
+            const response = await fetch(url, { headers });
+            if (response.ok) {
+                const data = await response.json();
+                if (data.slots && data.slots.length) {
+                    slots = data.slots;
+                }
+            }
+        } catch (e) {
+            // fallback
+        }
+        
+        // Generate default times if no slots returned
+        if (!slots.length) {
+            const start = 9, end = 17;
+            for (let hour = start; hour < end; hour++) {
+                slots.push({ time: hour + ':00', available: true });
+                slots.push({ time: hour + ':30', available: true });
+            }
+        }
+        
+        const availableSlots = slots.filter(s => s.available);
+        
+        container.innerHTML = '';
+        if (availableSlots.length) {
+            container.innerHTML += `<div class="col-12 mb-2"><small class="text-success">${availableSlots.length} slots available</small></div>`;
+        } else {
+            container.innerHTML += `<div class="col-12 mb-2"><small class="text-danger">No available slots for this date</small></div>`;
+        }
+        
+        slots.forEach(slot => {
+            const col = document.createElement('div');
+            col.className = 'col-3 mb-2';
+            col.innerHTML = `
+                <div class="time-slot ${slot.available ? '' : 'disabled'}" data-time="${slot.time}" ${!slot.available ? 'style="opacity:0.5;cursor:not-allowed;"' : ''}>
+                    ${slot.time}
+                    ${!slot.available ? '<br><small>Booked</small>' : ''}
+                </div>
+            `;
+            container.appendChild(col);
+        });
+        
+        document.querySelectorAll('.time-slot:not(.disabled)').forEach(slot => {
+            slot.addEventListener('click', function() {
+                document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+                this.classList.add('selected');
+                document.getElementById('selectedTime').value = this.dataset.time;
+            });
+        });
+    } catch (error) {
+        console.error('Error loading time slots:', error);
+        container.innerHTML = '<div class="col-12 text-center py-3"><span class="text-danger">Error loading slots. Please refresh.</span></div>';
+    }
+}
+
+// ---- SUBMIT BOOKING ----
+document.getElementById('submitBtn').addEventListener('click', async () => {
+    const user = getUser();
+    if (!user) {
+        alert('Please login first');
+        window.location.href = 'login.html';
+        return;
+    }
+    
+    const barberId = document.getElementById('selectedBarber').value;
+    const serviceId = document.getElementById('serviceSelect').value;
+    const bookingDate = document.getElementById('appointmentDate').value;
+    const bookingTime = document.getElementById('selectedTime').value;
+    const notes = document.getElementById('bookingNotes').value;
+    
+    if (!barberId) { alert('Please select a barber'); return; }
+    if (!serviceId) { alert('Please select a service'); return; }
+    if (!bookingDate) { alert('Please select a date'); return; }
+    if (!bookingTime) { alert('Please select a time slot'); return; }
+    
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerHTML = 'Booking...';
+    
+    try {
+        const token = getToken();
+        if (!token) {
+            alert('Session expired. Please login again.');
+            window.location.href = 'login.html';
+            return;
+        }
+        
+        const response = await fetch(`${API_BASE}/bookings`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                barber_id: parseInt(barberId),
+                service_id: parseInt(serviceId),
+                booking_date: bookingDate,
+                booking_time: bookingTime,
+                notes: notes
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            alert('Booking successful!');
+            window.location.href = 'dashboard.html';
+        } else {
+            if (response.status === 401) {
+                localStorage.clear();
+                alert('Your session has expired. Please login again.');
+                window.location.href = 'login.html';
+            } else {
+                alert('Booking failed: ' + (data.message || 'Unknown error'));
+            }
+            btn.disabled = false;
+            btn.innerHTML = 'Confirm Booking';
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Network error. Please try again.');
+        btn.disabled = false;
+        btn.innerHTML = 'Confirm Booking';
+    }
+});
+
+// ---- DATE PICKER ----
+const dateInput = document.getElementById('appointmentDate');
+if (dateInput) {
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.min = today;
+    dateInput.addEventListener('change', () => {
+        const barberId = document.getElementById('selectedBarber').value;
+        if (barberId) {
+            loadTimeSlots(dateInput.value, barberId);
+        } else {
+            document.getElementById('timeSlotsGrid').innerHTML = `
+                <div class="col-12 text-center py-3">
+                    <span class="text-muted">Select a barber first</span>
+                </div>
+            `;
+        }
+    });
+}
+
+// ---- STYLE RECOMMENDER ----
+document.getElementById('recBtn').addEventListener('click', () => {
+    const face = document.getElementById('faceShape').value;
+    const hair = document.getElementById('hairType').value;
+    
+    const recommendations = {
+        oval: { curly: ['Taper Fade', 'Textured Curls'], straight: ['Side Part', 'Pompadour'], wavy: ['Textured Crop', 'French Crop'], coarse: ['Low Fade', 'Shape Up'] },
+        round: { curly: ['High Top', 'Fro-Hawk'], straight: ['High Fade', 'Quiff'], wavy: ['Pompadour', 'Side Sweep'], coarse: ['High Fade', 'Line Up'] },
+        square: { curly: ['Low Taper', 'Soft Curls'], straight: ['Crew Cut', 'Side Part'], wavy: ['Textured Quiff', 'Caesar Cut'], coarse: ['Buzz Cut', 'Taper Fade'] }
+    };
+    
+    let styles = ['Taper Fade', 'Skin Fade', 'Mid Fade', 'Textured Crop'];
+    if (face && hair && recommendations[face] && recommendations[face][hair]) {
+        styles = recommendations[face][hair];
+    }
+    
+    document.getElementById('recResults').innerHTML = `
+        <div class="mt-2 p-3" style="background: #2a2a2a; border-radius: 10px; border: 1px solid #444;">
+            <small class="text-warning fw-bold">Recommended for you:</small>
+            <div class="row mt-2">
+                ${styles.slice(0,4).map(s => `<div class="col-6 mb-2"><small class="text-light">${s}</small></div>`).join('')}
+            </div>
+        </div>
+    `;
+});
+
+// ---- INIT ----
+document.addEventListener('DOMContentLoaded', () => {
+    if (checkLogin()) {
+        loadBarbers();
+        loadServices();
+    }
+});
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

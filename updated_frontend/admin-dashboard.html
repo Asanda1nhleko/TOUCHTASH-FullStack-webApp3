@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard — touchTash</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <style>
+    * { box-sizing: border-box; }
+    body { background: #0a0a0a; color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    .btn-gold { background: #c9a84c; color: #000; border: none; padding: 8px 20px; border-radius: 5px; font-weight: bold; }
+    .btn-gold:hover { background: #b8943a; color: #000; }
+    .btn-gold-sm { background: #c9a84c; color: #000; border: none; padding: 4px 14px; border-radius: 4px; font-weight: bold; font-size: 12px; }
+    .btn-gold-sm:hover { background: #b8943a; color: #000; }
+    .btn-success-sm { background: #28a745; color: #fff; border: none; padding: 4px 10px; border-radius: 4px; font-size: 11px; }
+    .btn-success-sm:hover { background: #218838; color: #fff; }
+    .btn-danger-sm { background: #dc3545; color: #fff; border: none; padding: 4px 10px; border-radius: 4px; font-size: 11px; }
+    .btn-danger-sm:hover { background: #c82333; color: #fff; }
+    .btn-warning-sm { background: #ffc107; color: #000; border: none; padding: 4px 10px; border-radius: 4px; font-size: 11px; }
+    .btn-warning-sm:hover { background: #e0a800; color: #000; }
+    .btn-secondary-sm { background: #6c757d; color: #fff; border: none; padding: 4px 10px; border-radius: 4px; font-size: 11px; }
+    .btn-secondary-sm:hover { background: #5a6268; color: #fff; }
+    
+    .card-dark { background: #1a1a1a; border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 1px solid #333; }
+    .stat-card { background: #1a1a1a; border-radius: 12px; padding: 20px; text-align: center; border: 1px solid #333; height: 100%; }
+    .stat-number { font-size: 32px; font-weight: bold; color: #c9a84c; }
+    
+    .badge-status { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; display: inline-block; }
+    .badge-status.pending { background: #ffc10720; color: #ffc107; }
+    .badge-status.approved { background: #28a74520; color: #28a745; }
+    .badge-status.completed { background: #17a2b820; color: #17a2b8; }
+    .badge-status.cancelled { background: #dc354520; color: #dc3545; }
+    
+    .badge-availability { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; display: inline-block; }
+    .badge-availability.available { background: #28a74520; color: #28a745; }
+    .badge-availability.unavailable { background: #dc354520; color: #dc3545; }
+    
+    .sidebar { width: 260px; background: #111; min-height: 100vh; position: fixed; border-right: 1px solid #333; z-index: 1000; overflow-y: auto; }
+    .sidebar-brand { padding: 20px; border-bottom: 1px solid #333; }
+    .sidebar-brand h3 { color: #fff; margin: 0; font-size: 22px; }
+    .sidebar-brand small { color: #888; font-size: 13px; }
+    .sidebar-nav { padding: 10px 0; }
+    .nav-link-custom { display: block; padding: 12px 20px; color: #aaa; text-decoration: none; transition: all 0.2s; font-size: 14px; }
+    .nav-link-custom:hover { background: #1a1a1a; color: #c9a84c; }
+    .nav-link-custom.active { background: #1a1a1a; color: #c9a84c; border-left: 3px solid #c9a84c; }
+    .nav-divider { border-color: #333; margin: 10px 20px; }
+    
+    .dashboard-main { margin-left: 260px; padding: 20px 25px; }
+    
+    .table { background: transparent; color: #fff; margin-bottom: 0; }
+    .table td, .table th { border-color: #333; color: #fff; padding: 10px 12px; vertical-align: middle; }
+    .table th { font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: #aaa !important; }
+    .table-responsive { overflow-x: auto; }
+    
+    .form-control { background: #2a2a2a; border: 1px solid #444; color: #fff; border-radius: 8px; padding: 10px 14px; }
+    .form-control:focus { background: #2a2a2a; border-color: #c9a84c; color: #fff; box-shadow: none; }
+    .form-control::placeholder { color: #888; }
+    .form-label { color: #aaa; font-size: 13px; font-weight: 500; margin-bottom: 5px; }
+    .form-select { background: #2a2a2a; border: 1px solid #444; color: #fff; border-radius: 8px; padding: 10px 14px; }
+    .form-select:focus { background: #2a2a2a; border-color: #c9a84c; color: #fff; box-shadow: none; }
+    .form-select option { background: #1a1a1a; color: #fff; }
+    
+    .modal-content { background: #1a1a1a; border: 1px solid #333; }
+    .modal-header { border-bottom-color: #333; padding: 15px 20px; }
+    .modal-header .modal-title { color: #fff; font-size: 18px; }
+    .modal-footer { border-top-color: #333; padding: 15px 20px; }
+    .modal-body { padding: 20px; }
+    .btn-close-white { filter: invert(1); }
+    
+    .text-muted { color: #888 !important; }
+    .text-gold { color: #c9a84c; }
+    
+    .image-preview {
+      max-width: 100px;
+      max-height: 100px;
+      border-radius: 8px;
+      border: 1px solid #444;
+      margin-top: 8px;
+    }
+    
+    @media (max-width: 768px) { .sidebar { display: none; } .dashboard-main { margin-left: 0; padding: 15px; } }
+    @media (max-width: 576px) { .stat-number { font-size: 24px; } .stat-card { padding: 15px; } .card-dark { padding: 15px; } }
+    
+    .toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; }
+    .toast-custom { background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 15px 20px; border-radius: 8px; margin-bottom: 10px; min-width: 300px; animation: slideIn 0.3s ease; }
+    .toast-custom.success { border-left: 4px solid #28a745; }
+    .toast-custom.error { border-left: 4px solid #dc3545; }
+    .toast-custom.info { border-left: 4px solid #c9a84c; }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+  </style>
+</head>
+<body>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-brand">
+    <h3>touch<span style="color: #c9a84c;">Tash</span></h3>
+    <small>Admin Panel</small>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="#" class="nav-link-custom active" onclick="showSection('overview'); return false;">
+      <i class="bi bi-speedometer2 me-2"></i> Dashboard
+    </a>
+    <a href="#" class="nav-link-custom" onclick="showSection('bookings'); return false;">
+      <i class="bi bi-calendar-check me-2"></i> Bookings
+    </a>
+    <a href="#" class="nav-link-custom" onclick="showSection('barbers'); return false;">
+      <i class="bi bi-people me-2"></i> Barbers
+    </a>
+    <a href="#" class="nav-link-custom" onclick="showSection('services'); return false;">
+      <i class="bi bi-scissors me-2"></i> Services
+    </a>
+    <a href="#" class="nav-link-custom" onclick="showSection('reviews'); return false;">
+      <i class="bi bi-star me-2"></i> Reviews
+    </a>
+    <hr class="nav-divider">
+    <a href="#" class="nav-link-custom" onclick="logout(); return false;" style="color: #ff6b6b;">
+      <i class="bi bi-box-arrow-right me-2"></i> Sign Out
+    </a>
+  </nav>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="dashboard-main">
+
+  <!-- Header -->
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <div>
+      <h2 id="greetingText" style="color: #fff; font-size: 24px;">Good Evening, Admin 👋</h2>
+      <p id="greetingDate" class="text-muted mb-0" style="font-size: 14px;"></p>
+    </div>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div id="overviewSection">
+    <div class="row mb-4">
+      <div class="col-6 col-md-3 mb-3">
+        <div class="stat-card">
+          <div class="stat-number" id="totalBookings">0</div>
+          <p class="text-muted mb-0" style="font-size: 13px;">Total Bookings</p>
+        </div>
+      </div>
+      <div class="col-6 col-md-3 mb-3">
+        <div class="stat-card">
+          <div class="stat-number" id="totalUsers">0</div>
+          <p class="text-muted mb-0" style="font-size: 13px;">Total Users</p>
+        </div>
+      </div>
+      <div class="col-6 col-md-3 mb-3">
+        <div class="stat-card">
+          <div class="stat-number" id="totalBarbers">0</div>
+          <p class="text-muted mb-0" style="font-size: 13px;">Total Barbers</p>
+        </div>
+      </div>
+      <div class="col-6 col-md-3 mb-3">
+        <div class="stat-card">
+          <div class="stat-number" id="totalReviews">0</div>
+          <p class="text-muted mb-0" style="font-size: 13px;">Total Reviews</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-dark">
+      <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+        <h5 style="color: #fff; margin: 0; font-size: 16px;">
+          <i class="bi bi-clock-history me-2 text-warning"></i> Recent Bookings
+        </h5>
+        <button class="btn btn-gold-sm" onclick="showSection('bookings')">View All</button>
+      </div>
+      <hr style="border-color: #333; margin: 0 0 15px 0;">
+      <div class="table-responsive">
+        <table class="table table-dark">
+          <thead>
+            <tr><th>User</th><th>Service</th><th>Barber</th><th>Date</th><th>Status</th></tr>
+          </thead>
+          <tbody id="recentBookingsTable">
+            <tr><td colspan="5" class="text-center text-muted">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOOKINGS -->
+  <div id="bookingsSection" style="display: none;">
+    <div class="card-dark">
+      <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+        <h5 style="color: #fff; margin: 0; font-size: 16px;">
+          <i class="bi bi-calendar-check me-2 text-warning"></i> All Bookings
+        </h5>
+      </div>
+      <hr style="border-color: #333; margin: 0 0 15px 0;">
+      <div class="table-responsive">
+        <table class="table table-dark">
+          <thead>
+            <tr><th>ID</th><th>User</th><th>Service</th><th>Barber</th><th>Date</th><th>Time</th><th>Status</th><th>Actions</th></tr>
+          </thead>
+          <tbody id="allBookingsTable">
+            <tr><td colspan="8" class="text-center text-muted">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- BARBERS -->
+  <div id="barbersSection" style="display: none;">
+    <div class="card-dark">
+      <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+        <h5 style="color: #fff; margin: 0; font-size: 16px;">
+          <i class="bi bi-people me-2 text-warning"></i> Manage Barbers
+        </h5>
+        <button class="btn btn-gold-sm" onclick="openAddBarberModal()">
+          <i class="bi bi-plus-circle me-1"></i> Add Barber
+        </button>
+      </div>
+      <hr style="border-color: #333; margin: 0 0 15px 0;">
+      <div class="table-responsive">
+        <table class="table table-dark">
+          <thead>
+            <tr><th>ID</th><th>Image</th><th>Name</th><th>Specialty</th><th>Phone</th><th>Availability</th><th>Actions</th></tr>
+          </thead>
+          <tbody id="barbersTable">
+            <tr><td colspan="7" class="text-center text-muted">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- SERVICES -->
+  <div id="servicesSection" style="display: none;">
+    <div class="card-dark">
+      <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+        <h5 style="color: #fff; margin: 0; font-size: 16px;">
+          <i class="bi bi-scissors me-2 text-warning"></i> Manage Services
+        </h5>
+        <button class="btn btn-gold-sm" onclick="openAddServiceModal()">
+          <i class="bi bi-plus-circle me-1"></i> Add Service
+        </button>
+      </div>
+      <hr style="border-color: #333; margin: 0 0 15px 0;">
+      <div class="table-responsive">
+        <table class="table table-dark">
+          <thead>
+            <tr><th>ID</th><th>Name</th><th>Price</th><th>Duration</th><th>Actions</th></tr>
+          </thead>
+          <tbody id="servicesTable">
+            <tr><td colspan="5" class="text-center text-muted">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- REVIEWS -->
+  <div id="reviewsSection" style="display: none;">
+    <div class="card-dark">
+      <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+        <h5 style="color: #fff; margin: 0; font-size: 16px;">
+          <i class="bi bi-star me-2 text-warning"></i> Customer Reviews
+        </h5>
+      </div>
+      <hr style="border-color: #333; margin: 0 0 15px 0;">
+      <div class="table-responsive">
+        <table class="table table-dark">
+          <thead>
+            <tr><th>ID</th><th>Customer</th><th>Barber</th><th>Rating</th><th>Comment</th><th>Date</th></tr>
+          </thead>
+          <tbody id="reviewsTable">
+            <tr><td colspan="6" class="text-center text-muted">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="text-center mt-4">
+    <a href="#" onclick="showSection('overview'); return false;" class="text-gold" style="text-decoration: none; font-size: 14px;">
+      <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+    </a>
+  </div>
+</div>
+
+<!-- ===== ADD BARBER MODAL (with Image Upload) ===== -->
+<div class="modal fade" id="addBarberModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="bi bi-person-plus me-2 text-warning"></i>Add Barber</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">Barber Name *</label>
+          <input type="text" id="barberNameInput" class="form-control" placeholder="Enter barber name">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Specialty</label>
+          <input type="text" id="barberSpecialtyInput" class="form-control" placeholder="e.g. Fades, Beards, Kids">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Phone</label>
+          <input type="text" id="barberPhoneInput" class="form-control" placeholder="e.g. 082 123 4567">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Availability</label>
+          <select id="barberAvailabilityInput" class="form-select">
+            <option value="1">Available</option>
+            <option value="0">Unavailable</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Profile Image</label>
+          <input type="file" id="barberImageInput" class="form-control" accept="image/*" onchange="previewAddImage(event)">
+          <img id="addImagePreview" class="image-preview" style="display:none;" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-gold" onclick="addBarber()">Add Barber</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== EDIT BARBER MODAL (with Image Upload) ===== -->
+<div class="modal fade" id="editBarberModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="bi bi-pencil-square me-2 text-warning"></i>Edit Barber</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editBarberId">
+        <div class="mb-3">
+          <label class="form-label">Barber Name *</label>
+          <input type="text" id="editBarberName" class="form-control" placeholder="Enter barber name">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Specialty</label>
+          <input type="text" id="editBarberSpecialty" class="form-control" placeholder="e.g. Fades, Beards, Kids">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Phone</label>
+          <input type="text" id="editBarberPhone" class="form-control" placeholder="e.g. 082 123 4567">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Availability</label>
+          <select id="editBarberAvailability" class="form-select">
+            <option value="1">Available</option>
+            <option value="0">Unavailable</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Profile Image</label>
+          <input type="file" id="editBarberImageInput" class="form-control" accept="image/*" onchange="previewEditImage(event)">
+          <img id="editImagePreview" class="image-preview" style="display:none;" />
+          <small class="text-muted">Leave empty to keep current image</small>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-gold" onclick="updateBarber()">Update Barber</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADD SERVICE MODAL ===== -->
+<div class="modal fade" id="addServiceModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="bi bi-plus-circle me-2 text-warning"></i>Add Service</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">Service Name *</label>
+          <input type="text" id="serviceNameInput" class="form-control" placeholder="Enter service name">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Price (R) *</label>
+          <input type="number" id="servicePriceInput" class="form-control" placeholder="e.g. 150">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Duration (minutes)</label>
+          <input type="number" id="serviceDurationInput" class="form-control" placeholder="e.g. 60">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-gold" onclick="addService()">Add Service</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== EDIT SERVICE MODAL ===== -->
+<div class="modal fade" id="editServiceModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="bi bi-pencil-square me-2 text-warning"></i>Edit Service</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editServiceId">
+        <div class="mb-3">
+          <label class="form-label">Service Name *</label>
+          <input type="text" id="editServiceName" class="form-control" placeholder="Enter service name">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Price (R) *</label>
+          <input type="number" id="editServicePrice" class="form-control" placeholder="e.g. 150">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Duration (minutes)</label>
+          <input type="number" id="editServiceDuration" class="form-control" placeholder="e.g. 60">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-gold" onclick="updateService()">Update Service</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== EDIT BOOKING MODAL ===== -->
+<div class="modal fade" id="editBookingModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="bi bi-pencil-square me-2 text-warning"></i>Edit Booking</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editBookingId">
+        <div class="mb-3">
+          <label class="form-label">User</label>
+          <input type="text" id="editBookingUser" class="form-control" disabled>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Service</label>
+          <select id="editBookingService" class="form-select">
+            <option value="">Select a service</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Barber</label>
+          <select id="editBookingBarber" class="form-select">
+            <option value="">Select a barber</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Date</label>
+          <input type="date" id="editBookingDate" class="form-control">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Time</label>
+          <input type="time" id="editBookingTime" class="form-control">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Status</label>
+          <select id="editBookingStatus" class="form-select">
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="completed">Completed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-gold" onclick="updateBooking()">Update Booking</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// ============================================
+// ADMIN DASHBOARD - WITH IMAGE UPLOAD & QUICK STATUS
+// ============================================
+
+const API_BASE = 'http://localhost:5000/api';
+
+// ===== TOAST NOTIFICATIONS =====
+function showToast(message, type = 'info') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast-custom ${type}`;
+  toast.innerHTML = message;
+  container.appendChild(toast);
+  setTimeout(() => { toast.remove(); }, 4000);
+}
+
+// ===== AUTH HELPERS =====
+function getToken() { return localStorage.getItem('tt_token'); }
+function getUser() { 
+  try { 
+    const user = localStorage.getItem('tt_user');
+    return user ? JSON.parse(user) : null;
+  } catch { return null; } 
+}
+
+// ===== CHECK LOGIN =====
+function checkLogin() {
+  const token = getToken();
+  const user = getUser();
+  
+  if (!token || !user) {
+    window.location.href = 'login.html';
+    return false;
+  }
+  
+  const isAdmin = user.role === 'admin' || 
+                  user.email === 'admin@touchtash.co.za' || 
+                  user.email === 'brokenasanda@gmail.com';
+  
+  if (!isAdmin) {
+    window.location.href = 'dashboard.html';
+    return false;
+  }
+  
+  const hour = new Date().getHours();
+  const greet = hour < 12 ? 'Good Morning' : hour < 17 ? 'Good Afternoon' : 'Good Evening';
+  document.getElementById('greetingText').innerHTML = `${greet}, ${user.full_name || user.name || 'Admin'} 👋`;
+  document.getElementById('greetingDate').innerHTML = new Date().toLocaleDateString('en-ZA', { 
+    weekday: 'long', 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric' 
+  });
+  
+  return true;
+}
+
+// ===== NAVIGATION =====
+function showSection(section) {
+  document.querySelectorAll('[id$="Section"]').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('.nav-link-custom').forEach(link => link.classList.remove('active'));
+  
+  const sectionMap = {
+    'overview': 'overviewSection',
+    'bookings': 'bookingsSection',
+    'barbers': 'barbersSection',
+    'services': 'servicesSection',
+    'reviews': 'reviewsSection'
+  };
+  
+  const target = document.getElementById(sectionMap[section]);
+  if (target) target.style.display = 'block';
+  
+  const navLinks = document.querySelectorAll('.nav-link-custom');
+  const index = ['overview', 'bookings', 'barbers', 'services', 'reviews'].indexOf(section);
+  if (navLinks[index]) navLinks[index].classList.add('active');
+  
+  if (section === 'bookings') loadAllBookings();
+  if (section === 'barbers') loadBarbers();
+  if (section === 'services') loadServices();
+  if (section === 'reviews') loadReviews();
+}
+
+// ===== API CALL (for JSON) =====
+async function apiCall(endpoint, options = {}) {
+  try {
+    const response = await fetch(`${API_BASE}${endpoint}`, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getToken()}`,
+        ...(options.headers || {})
+      }
+    });
+    
+    if (response.status === 401) {
+      localStorage.clear();
+      window.location.href = 'login.html';
+      throw new Error('Session expired');
+    }
+    
+    const data = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(data.message || data.error || `HTTP ${response.status}`);
+    }
+    
+    return data;
+  } catch (error) {
+    console.error('API Error:', error);
+    throw error;
+  }
+}
+
+// ===== LOAD STATS =====
+async function loadStats() {
+  try {
+    const data = await apiCall('/admin/stats');
+    document.getElementById('totalBookings').innerHTML = data.totalBookings || 0;
+    document.getElementById('totalUsers').innerHTML = data.totalUsers || 0;
+    document.getElementById('totalBarbers').innerHTML = data.totalBarbers || 0;
+    document.getElementById('totalReviews').innerHTML = data.totalReviews || 0;
+  } catch (error) {
+    console.error('Error loading stats:', error);
+    try {
+      const [bookings, barbers, services, reviews] = await Promise.all([
+        apiCall('/admin/bookings').catch(() => ({ bookings: [] })),
+        apiCall('/barbers').catch(() => ({ barbers: [] })),
+        apiCall('/services').catch(() => ({ services: [] })),
+        apiCall('/admin/reviews').catch(() => ({ reviews: [] }))
+      ]);
+      document.getElementById('totalBookings').innerHTML = (bookings.bookings || []).length;
+      document.getElementById('totalBarbers').innerHTML = (barbers.barbers || []).length;
+      document.getElementById('totalReviews').innerHTML = (reviews.reviews || []).length;
+      document.getElementById('totalUsers').innerHTML = '—';
+    } catch (e) {}
+  }
+}
+
+// ===== LOAD RECENT BOOKINGS =====
+async function loadRecentBookings() {
+  try {
+    const data = await apiCall('/admin/bookings');
+    const bookings = data.bookings || [];
+    const tbody = document.getElementById('recentBookingsTable');
+    if (bookings.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">No bookings yet</td></tr>';
+      return;
+    }
+    const recent = bookings.slice(0, 5);
+    tbody.innerHTML = recent.map(b => `
+      <tr>
+        <td>${b.user_name || b.full_name || b.user_id || 'Unknown'}</td>
+        <td>${b.service_name || b.name || 'Unknown'}</td>
+        <td>${b.barber_name || b.barber || 'Unknown'}</td>
+        <td>${formatDate(b.booking_date || b.date)}</td>
+        <td><span class="badge-status ${b.status}">${b.status || 'pending'}</span></td>
+      </tr>
+    `).join('');
+  } catch (error) {
+    console.error('Error loading recent bookings:', error);
+    document.getElementById('recentBookingsTable').innerHTML = '<tr><td colspan="5" class="text-center text-danger">Error loading bookings</td></tr>';
+  }
+}
+
+// ===== LOAD ALL BOOKINGS (with Quick Status Buttons) =====
+async function loadAllBookings() {
+  try {
+    const data = await apiCall('/admin/bookings');
+    const bookings = data.bookings || [];
+    const tbody = document.getElementById('allBookingsTable');
+    if (bookings.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted">No bookings found</td></tr>';
+      return;
+    }
+    tbody.innerHTML = bookings.map(b => `
+      <tr>
+        <td>#${b.id}</td>
+        <td>${b.user_name || b.full_name || b.user_id || 'Unknown'}</td>
+        <td>${b.service_name || b.name || 'Unknown'}</td>
+        <td>${b.barber_name || b.barber || 'Unknown'}</td>
+        <td>${formatDate(b.booking_date || b.date)}</td>
+        <td>${b.booking_time || b.time || '--:--'}</td>
+        <td><span class="badge-status ${b.status}">${b.status || 'pending'}</span></td>
+        <td>
+          <button class="btn btn-success-sm me-1" onclick="updateBookingStatus(${b.id}, 'approved')" title="Approve">✓</button>
+          <button class="btn btn-danger-sm me-1" onclick="updateBookingStatus(${b.id}, 'cancelled')" title="Cancel">✗</button>
+          <button class="btn btn-warning-sm me-1" onclick="openEditBookingModal(${b.id})">Edit</button>
+          <button class="btn btn-secondary-sm" onclick="deleteBooking(${b.id})">Del</button>
+        </td>
+      </tr>
+    `).join('');
+  } catch (error) {
+    console.error('Error loading bookings:', error);
+    document.getElementById('allBookingsTable').innerHTML = '<tr><td colspan="8" class="text-center text-danger">Error loading bookings</td></tr>';
+  }
+}
+
+// ===== QUICK UPDATE BOOKING STATUS =====
+async function updateBookingStatus(id, status) {
+  if (!confirm(`Change booking #${id} to ${status}?`)) return;
+  try {
+    await apiCall(`/admin/bookings/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({ status })
+    });
+    showToast(`✅ Booking #${id} ${status}!`, 'success');
+    loadAllBookings();
+    loadRecentBookings();
+    loadStats();
+  } catch (error) {
+    showToast('❌ Failed to update status: ' + error.message, 'error');
+  }
+}
+
+// ===== LOAD BARBERS (with image) =====
+async function loadBarbers() {
+  try {
+    const data = await apiCall('/barbers');
+    const barbers = data.barbers || [];
+    const tbody = document.getElementById('barbersTable');
+    if (barbers.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">No barbers found</td></tr>';
+      return;
+    }
+    tbody.innerHTML = barbers.map(b => {
+      const name = b.name || 'Unknown';
+      const specialty = b.specialty || 'General';
+      const phone = b.phone || '—';
+      const avail = b.availability;
+      const availBadge = avail == 1 ? '<span class="badge-availability available">Available</span>' : '<span class="badge-availability unavailable">Unavailable</span>';
+      const img = b.image_url ? `http://localhost:5000${b.image_url}` : 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="%23666" stroke-width="2"%3E%3Ccircle cx="12" cy="8" r="4"/%3E%3Cpath d="M5.2 20h13.6c.7 0 1.2-.6 1-1.3C19.4 15.2 16.3 13 12 13s-7.4 2.2-8.8 5.7c-.2.7.3 1.3 1 1.3z"/%3E%3C/svg%3E';
+      return `
+        <tr>
+          <td>#${b.id}</td>
+          <td><img src="${img}" alt="${name}" style="width:40px;height:40px;object-fit:cover;border-radius:50%;border:1px solid #444;"></td>
+          <td>${name}</td>
+          <td>${specialty}</td>
+          <td>${phone}</td>
+          <td>${availBadge}</td>
+          <td>
+            <button class="btn btn-warning-sm me-1" onclick="openEditBarberModal(${b.id})">Edit</button>
+            <button class="btn btn-danger-sm" onclick="deleteBarber(${b.id})">Delete</button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  } catch (error) {
+    console.error('Error loading barbers:', error);
+    document.getElementById('barbersTable').innerHTML = '<tr><td colspan="7" class="text-center text-danger">Error loading barbers</td></tr>';
+  }
+}
+
+// ===== LOAD SERVICES =====
+async function loadServices() {
+  try {
+    const data = await apiCall('/services');
+    const services = data.services || [];
+    const tbody = document.getElementById('servicesTable');
+    if (services.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">No services found</td></tr>';
+      return;
+    }
+    tbody.innerHTML = services.map(s => `
+      <tr>
+        <td>#${s.id}</td>
+        <td>${s.name || s.service_name || 'Unknown'}</td>
+        <td>R${s.price || '0.00'}</td>
+        <td>${s.duration || '--'} min</td>
+        <td>
+          <button class="btn btn-warning-sm me-1" onclick="openEditServiceModal(${s.id})">Edit</button>
+          <button class="btn btn-danger-sm" onclick="deleteService(${s.id})">Delete</button>
+        </td>
+      </tr>
+    `).join('');
+  } catch (error) {
+    console.error('Error loading services:', error);
+    document.getElementById('servicesTable').innerHTML = '<tr><td colspan="5" class="text-center text-danger">Error loading services</td></tr>';
+  }
+}
+
+// ===== LOAD REVIEWS =====
+async function loadReviews() {
+  try {
+    const data = await apiCall('/admin/reviews');
+    const reviews = data.reviews || [];
+    const tbody = document.getElementById('reviewsTable');
+    if (reviews.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No reviews yet</td></tr>';
+      return;
+    }
+    tbody.innerHTML = reviews.map(r => {
+      const rating = r.rating || 0;
+      const stars = '⭐'.repeat(Math.round(rating)) + ' ' + rating + '/5';
+      return `
+        <tr>
+          <td>#${r.id}</td>
+          <td>${r.user_name || r.full_name || 'Anonymous'}</td>
+          <td>${r.barber_name || r.barber || 'Unknown'}</td>
+          <td>${stars}</td>
+          <td style="max-width: 150px; white-space: normal; word-break: break-word;">${r.comment || '—'}</td>
+          <td>${formatDate(r.created_at || r.date)}</td>
+        </tr>
+      `;
+    }).join('');
+  } catch (error) {
+    console.error('Error loading reviews:', error);
+    document.getElementById('reviewsTable').innerHTML = '<tr><td colspan="6" class="text-center text-danger">Error loading reviews</td></tr>';
+  }
+}
+
+// ===== IMAGE PREVIEW HELPERS =====
+function previewAddImage(event) {
+  const file = event.target.files[0];
+  const preview = document.getElementById('addImagePreview');
+  if (file) {
+    preview.style.display = 'block';
+    preview.src = URL.createObjectURL(file);
+  } else {
+    preview.style.display = 'none';
+    preview.src = '';
+  }
+}
+
+function previewEditImage(event) {
+  const file = event.target.files[0];
+  const preview = document.getElementById('editImagePreview');
+  if (file) {
+    preview.style.display = 'block';
+    preview.src = URL.createObjectURL(file);
+  } else {
+    preview.style.display = 'none';
+    preview.src = '';
+  }
+}
+
+// ===== ADD BARBER =====
+function openAddBarberModal() {
+  document.getElementById('barberNameInput').value = '';
+  document.getElementById('barberSpecialtyInput').value = '';
+  document.getElementById('barberPhoneInput').value = '';
+  document.getElementById('barberAvailabilityInput').value = '1';
+  document.getElementById('barberImageInput').value = '';
+  document.getElementById('addImagePreview').style.display = 'none';
+  new bootstrap.Modal(document.getElementById('addBarberModal')).show();
+}
+
+async function addBarber() {
+  const name = document.getElementById('barberNameInput').value.trim();
+  const specialty = document.getElementById('barberSpecialtyInput').value.trim();
+  const phone = document.getElementById('barberPhoneInput').value.trim();
+  const availability = parseInt(document.getElementById('barberAvailabilityInput').value);
+  const imageFile = document.getElementById('barberImageInput').files[0];
+  
+  if (!name) {
+    showToast('Please enter a barber name', 'error');
+    return;
+  }
+
+  try {
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('specialty', specialty);
+    formData.append('phone', phone);
+    formData.append('availability', availability);
+    if (imageFile) formData.append('image', imageFile);
+
+    const response = await fetch(`${API_BASE}/barbers`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${getToken()}` },
+      body: formData
+    });
+
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'Failed to add barber');
+
+    showToast('✅ Barber added successfully!', 'success');
+    bootstrap.Modal.getInstance(document.getElementById('addBarberModal')).hide();
+    loadBarbers();
+    loadStats();
+  } catch (error) {
+    showToast('❌ Failed to add barber: ' + error.message, 'error');
+  }
+}
+
+// ===== EDIT BARBER =====
+async function openEditBarberModal(id) {
+  try {
+    const data = await apiCall(`/barbers/${id}`);
+    const barber = data.barber;
+    document.getElementById('editBarberId').value = id;
+    document.getElementById('editBarberName').value = barber.name || '';
+    document.getElementById('editBarberSpecialty').value = barber.specialty || '';
+    document.getElementById('editBarberPhone').value = barber.phone || '';
+    document.getElementById('editBarberAvailability').value = barber.availability !== undefined ? barber.availability : 1;
+    document.getElementById('editBarberImageInput').value = '';
+    const preview = document.getElementById('editImagePreview');
+    if (barber.image_url) {
+      preview.style.display = 'block';
+      preview.src = `http://localhost:5000${barber.image_url}`;
+    } else {
+      preview.style.display = 'none';
+      preview.src = '';
+    }
+    new bootstrap.Modal(document.getElementById('editBarberModal')).show();
+  } catch (error) {
+    showToast('❌ Error loading barber: ' + error.message, 'error');
+  }
+}
+
+async function updateBarber() {
+  const id = document.getElementById('editBarberId').value;
+  const name = document.getElementById('editBarberName').value.trim();
+  const specialty = document.getElementById('editBarberSpecialty').value.trim();
+  const phone = document.getElementById('editBarberPhone').value.trim();
+  const availability = parseInt(document.getElementById('editBarberAvailability').value);
+  const imageFile = document.getElementById('editBarberImageInput').files[0];
+  
+  if (!name) {
+    showToast('Please enter a barber name', 'error');
+    return;
+  }
+
+  try {
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('specialty', specialty);
+    formData.append('phone', phone);
+    formData.append('availability', availability);
+    if (imageFile) formData.append('image', imageFile);
+
+    const response = await fetch(`${API_BASE}/barbers/${id}`, {
+      method: 'PUT',
+      headers: { 'Authorization': `Bearer ${getToken()}` },
+      body: formData
+    });
+
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'Failed to update barber');
+
+    showToast('✅ Barber updated successfully!', 'success');
+    bootstrap.Modal.getInstance(document.getElementById('editBarberModal')).hide();
+    loadBarbers();
+    loadStats();
+  } catch (error) {
+    showToast('❌ Failed to update barber: ' + error.message, 'error');
+  }
+}
+
+// ===== DELETE BARBER =====
+async function deleteBarber(id) {
+  if (!confirm('Delete this barber?')) return;
+  try {
+    await apiCall(`/barbers/${id}`, { method: 'DELETE' });
+    showToast('✅ Barber deleted', 'success');
+    loadBarbers();
+    loadStats();
+  } catch (error) {
+    showToast('❌ Error deleting barber: ' + error.message, 'error');
+  }
+}
+
+// ===== ADD SERVICE =====
+function openAddServiceModal() {
+  document.getElementById('serviceNameInput').value = '';
+  document.getElementById('servicePriceInput').value = '';
+  document.getElementById('serviceDurationInput').value = '';
+  new bootstrap.Modal(document.getElementById('addServiceModal')).show();
+}
+
+async function addService() {
+  const name = document.getElementById('serviceNameInput').value.trim();
+  const price = parseFloat(document.getElementById('servicePriceInput').value);
+  const duration = parseInt(document.getElementById('serviceDurationInput').value) || 60;
+  
+  if (!name || !price) {
+    showToast('Please fill in all required fields', 'error');
+    return;
+  }
+  
+  try {
+    await apiCall('/services', {
+      method: 'POST',
+      body: JSON.stringify({ name, price, duration })
+    });
+    showToast('✅ Service added successfully!', 'success');
+    bootstrap.Modal.getInstance(document.getElementById('addServiceModal')).hide();
+    loadServices();
+    loadStats();
+  } catch (error) {
+    showToast('❌ Failed to add service: ' + error.message, 'error');
+  }
+}
+
+// ===== EDIT SERVICE =====
+async function openEditServiceModal(id) {
+  try {
+    const data = await apiCall(`/services/${id}`);
+    const service = data.service;
+    document.getElementById('editServiceId').value = id;
+    document.getElementById('editServiceName').value = service.name || service.service_name || '';
+    document.getElementById('editServicePrice').value = service.price || '';
+    document.getElementById('editServiceDuration').value = service.duration || '';
+    new bootstrap.Modal(document.getElementById('editServiceModal')).show();
+  } catch (error) {
+    showToast('❌ Error loading service: ' + error.message, 'error');
+  }
+}
+
+async function updateService() {
+  const id = document.getElementById('editServiceId').value;
+  const name = document.getElementById('editServiceName').value.trim();
+  const price = parseFloat(document.getElementById('editServicePrice').value);
+  const duration = parseInt(document.getElementById('editServiceDuration').value) || 60;
+  
+  if (!name || !price) {
+    showToast('Please fill in all required fields', 'error');
+    return;
+  }
+  
+  try {
+    await apiCall(`/services/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({ name, price, duration })
+    });
+    showToast('✅ Service updated successfully!', 'success');
+    bootstrap.Modal.getInstance(document.getElementById('editServiceModal')).hide();
+    loadServices();
+    loadStats();
+  } catch (error) {
+    showToast('❌ Failed to update service: ' + error.message, 'error');
+  }
+}
+
+// ===== DELETE SERVICE =====
+async function deleteService(id) {
+  if (!confirm('Delete this service?')) return;
+  try {
+    await apiCall(`/services/${id}`, { method: 'DELETE' });
+    showToast('✅ Service deleted', 'success');
+    loadServices();
+    loadStats();
+  } catch (error) {
+    showToast('❌ Error deleting service: ' + error.message, 'error');
+  }
+}
+
+// ===== EDIT BOOKING =====
+async function openEditBookingModal(id) {
+  try {
+    const bookingData = await apiCall(`/admin/bookings/${id}`);
+    const booking = bookingData.booking;
+    const [servicesData, barbersData] = await Promise.all([
+      apiCall('/services'),
+      apiCall('/barbers')
+    ]);
+    
+    document.getElementById('editBookingId').value = id;
+    document.getElementById('editBookingUser').value = booking.user_name || booking.full_name || 'Unknown';
+    document.getElementById('editBookingDate').value = booking.booking_date || '';
+    document.getElementById('editBookingTime').value = booking.booking_time || '';
+    document.getElementById('editBookingStatus').value = booking.status || 'pending';
+    
+    const serviceSelect = document.getElementById('editBookingService');
+    serviceSelect.innerHTML = '<option value="">Select a service</option>';
+    (servicesData.services || []).forEach(s => {
+      const option = document.createElement('option');
+      option.value = s.id;
+      option.textContent = `${s.name || s.service_name} - R${s.price}`;
+      if (s.id === booking.service_id) option.selected = true;
+      serviceSelect.appendChild(option);
+    });
+    
+    const barberSelect = document.getElementById('editBookingBarber');
+    barberSelect.innerHTML = '<option value="">Select a barber</option>';
+    (barbersData.barbers || []).forEach(b => {
+      const option = document.createElement('option');
+      option.value = b.id;
+      option.textContent = `${b.name || b.barber_name} (${b.specialty || 'General'})`;
+      if (b.id === booking.barber_id) option.selected = true;
+      barberSelect.appendChild(option);
+    });
+    
+    new bootstrap.Modal(document.getElementById('editBookingModal')).show();
+  } catch (error) {
+    showToast('❌ Error loading booking: ' + error.message, 'error');
+  }
+}
+
+async function updateBooking() {
+  const id = document.getElementById('editBookingId').value;
+  const service_id = parseInt(document.getElementById('editBookingService').value);
+  const barber_id = parseInt(document.getElementById('editBookingBarber').value);
+  const booking_date = document.getElementById('editBookingDate').value;
+  const booking_time = document.getElementById('editBookingTime').value;
+  const status = document.getElementById('editBookingStatus').value;
+  
+  if (!service_id || !barber_id || !booking_date || !booking_time) {
+    showToast('Please fill in all fields', 'error');
+    return;
+  }
+  
+  try {
+    await apiCall(`/admin/bookings/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({ service_id, barber_id, booking_date, booking_time, status })
+    });
+    showToast('✅ Booking updated successfully!', 'success');
+    bootstrap.Modal.getInstance(document.getElementById('editBookingModal')).hide();
+    loadAllBookings();
+    loadRecentBookings();
+    loadStats();
+  } catch (error) {
+    showToast('❌ Failed to update booking: ' + error.message, 'error');
+  }
+}
+
+// ===== DELETE BOOKING =====
+async function deleteBooking(id) {
+  if (!confirm('Delete this booking?')) return;
+  try {
+    await apiCall(`/admin/bookings/${id}`, { method: 'DELETE' });
+    showToast('✅ Booking deleted', 'success');
+    loadAllBookings();
+    loadRecentBookings();
+    loadStats();
+  } catch (error) {
+    showToast('❌ Error deleting booking: ' + error.message, 'error');
+  }
+}
+
+// ===== HELPERS =====
+function formatDate(dateStr) {
+  if (!dateStr) return '—';
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('en-ZA');
+}
+
+// ===== LOGOUT =====
+function logout() {
+  localStorage.clear();
+  window.location.href = 'login.html';
+}
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', () => {
+  if (checkLogin()) {
+    loadStats();
+    loadRecentBookings();
+  }
+});
+</script>
+
+</body>
+</html>

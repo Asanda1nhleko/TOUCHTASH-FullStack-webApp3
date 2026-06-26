@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>touchTash — Intelligent Barber Booking</title>
+  <!-- Bootstrap 5 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* Service card image styling */
+    .service-card .service-img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 8px 8px 0 0;
+      margin-bottom: 1rem;
+      transition: transform 0.3s ease;
+    }
+    .service-card:hover .service-img {
+      transform: scale(1.03);
+    }
+    .service-card {
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     NAVBAR
+══════════════════════════════════════════ -->
+<nav class="tt-navbar navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">
+      <span class="brand-logo">touch<span>Tash</span></span>
+    </a>
+
+    <button class="navbar-toggler border-0" type="button"
+            data-bs-toggle="collapse" data-bs-target="#mainNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="mainNav">
+      <ul class="navbar-nav mx-auto gap-1">
+        <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
+        <li class="nav-item"><a class="nav-link" href="#styles">Styles</a></li>
+        <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+        <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+      </ul>
+      <div class="d-flex gap-2 mt-3 mt-lg-0">
+        <a href="login.html" class="btn btn-ghost btn-sm">Sign In</a>
+        <a href="booking.html" class="btn btn-gold btn-sm">Book Now</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════
+     HERO SECTION
+══════════════════════════════════════════ -->
+<section class="hero-section">
+  <div class="hero-bg"></div>
+  <div class="hero-grid-line"></div>
+
+  <div class="container">
+    <div class="row align-items-center gy-5">
+
+      <!-- Left: Text -->
+      <div class="col-lg-6 hero-content">
+        <span class="hero-eyebrow">Premium Barber Experience</span>
+
+        <h1 class="hero-title">
+          Book Your<br>
+          Barber <span class="highlight">Appointment</span><br>
+          Online
+        </h1>
+
+        <p class="hero-subtitle">
+          Skip the queue. Choose your barber, pick a service, and lock in your slot —
+          all from your phone or laptop in seconds.
+        </p>
+
+        <div class="hero-actions">
+          <a href="booking.html" class="btn btn-gold">
+            <i class="bi bi-calendar-check me-2"></i>Book Now
+          </a>
+          <a href="#styles" class="btn btn-ghost">
+            <i class="bi bi-grid me-2"></i>Explore Styles
+          </a>
+        </div>
+
+        <!-- Stats -->
+        <div class="hero-stats">
+          <div>
+            <span class="stat-num">500+</span>
+            <span class="stat-label">Happy Clients</span>
+          </div>
+          <div>
+            <span class="stat-num">12</span>
+            <span class="stat-label">Expert Barbers</span>
+          </div>
+          <div>
+            <span class="stat-num">4.9★</span>
+            <span class="stat-label">Average Rating</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Image -->
+      <div class="col-lg-6 hero-image-col">
+        <div class="hero-img-frame">
+          <img src="images/Salon .jpg" alt="TouchTash Barber Shop" style="width:100%; border-radius: 16px;">
+          <!-- Floating badge -->
+          <div class="hero-badge">
+            <i class="bi bi-shield-check"></i>
+            <div>
+              <strong>Instant Booking</strong>
+              <span>Confirmed in seconds</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     SERVICES SECTION (WITH IMAGES)
+══════════════════════════════════════════ -->
+<section class="services-section" id="services">
+  <div class="container">
+
+    <div class="text-center mb-5">
+      <span class="section-label">What We Offer</span>
+      <div class="gold-line"></div>
+      <h2 class="section-title">Our Services</h2>
+      <p class="section-subtitle mx-auto">
+        From a clean shape-up to a full grooming session — we've got every cut covered.
+      </p>
+    </div>
+
+    <div class="row g-4">
+
+      <!-- Classic Haircut -->
+      <div class="col-sm-6 col-lg-4">
+        <div class="service-card">
+          <img src="images/classic haircut.jpg" alt="Classic Haircut" class="service-img">
+          <div class="service-icon"><i class="bi bi-scissors"></i></div>
+          <h5>Classic Haircut</h5>
+          <p>Timeless cuts tailored to your face shape and personal style preferences.</p>
+          <span class="service-price">R120</span>
+          <span class="service-duration">/ 30 min</span>
+        </div>
+      </div>
+
+      <!-- Skin Fade -->
+      <div class="col-sm-6 col-lg-4">
+        <div class="service-card">
+          <img src="images/skin fade.jpg" alt="Skin Fade" class="service-img">
+          <div class="service-icon"><i class="bi bi-water"></i></div>
+          <h5>Skin Fade</h5>
+          <p>Precision skin fade blended seamlessly for a sharp, modern look.</p>
+          <span class="service-price">R150</span>
+          <span class="service-duration">/ 45 min</span>
+        </div>
+      </div>
+
+      <!-- Beard Trim & Shape -->
+      <div class="col-sm-6 col-lg-4">
+        <div class="service-card">
+          <img src="images/beard-trim.jpg" alt="Beard Trim" class="service-img">
+          <div class="service-icon"><i class="bi bi-brush"></i></div>
+          <h5>Beard Trim & Shape</h5>
+          <p>Expert beard sculpting and grooming for a clean, defined finish.</p>
+          <span class="service-price">R80</span>
+          <span class="service-duration">/ 20 min</span>
+        </div>
+      </div>
+
+      <!-- Full Groom Package -->
+      <div class="col-sm-6 col-lg-4">
+        <div class="service-card">
+          <img src="images/full-groom.jpg" alt="Full Groom Package" class="service-img">
+          <div class="service-icon"><i class="bi bi-stars"></i></div>
+          <h5>Full Groom Package</h5>
+          <p>Complete haircut, beard trim, wash, and styling all in one session.</p>
+          <span class="service-price">R220</span>
+          <span class="service-duration">/ 75 min</span>
+        </div>
+      </div>
+
+      <!-- Kids Cut -->
+      <div class="col-sm-6 col-lg-4">
+        <div class="service-card">
+          <img src="images/kids-cut.jpg" alt="Kids Cut" class="service-img">
+          <div class="service-icon"><i class="bi bi-lightning-charge"></i></div>
+          <h5>Kids Cut</h5>
+          <p>Friendly, patient service for young ones. Quick and stress-free cuts.</p>
+          <span class="service-price">R90</span>
+          <span class="service-duration">/ 25 min</span>
+        </div>
+      </div>
+
+      <!-- Hot Towel Shave -->
+      <div class="col-sm-6 col-lg-4">
+        <div class="service-card">
+          <img src="images/hot-towel-shave.jpg" alt="Hot Towel Shave" class="service-img">
+          <div class="service-icon"><i class="bi bi-gem"></i></div>
+          <h5>Hot Towel Shave</h5>
+          <p>Traditional straight-razor shave with hot towel for a luxury experience.</p>
+          <span class="service-price">R180</span>
+          <span class="service-duration">/ 40 min</span>
+        </div>
+      </div>
+
+    </div><!-- /row -->
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     FEATURED STYLES SECTION
+══════════════════════════════════════════ -->
+<section class="styles-section" id="styles">
+  <div class="container">
+
+    <div class="mb-5 d-flex justify-content-between align-items-end flex-wrap gap-3">
+      <div>
+        <span class="section-label">Inspiration</span>
+        <div class="gold-line left"></div>
+        <h2 class="section-title mb-0">Featured Hairstyles</h2>
+      </div>
+      <a href="booking.html" class="btn btn-ghost btn-sm">
+        Book a Style <i class="bi bi-arrow-right ms-2"></i>
+      </a>
+    </div>
+
+    <div class="row g-3">
+
+      <!-- Skin Fade -->
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="style-card">
+          <img src="images/skin fade.jpg" alt="Skin Fade Hairstyle" style="width:100%; height:100%; object-fit:cover;">
+          <div class="style-overlay">
+            <div class="style-name">Skin Fade</div>
+            <span class="style-tag">Trending</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pompadour -->
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="style-card">
+          <img src="images/Pompadour.jpg" alt="Pompadour Hairstyle" style="width:100%; height:100%; object-fit:cover;">
+          <div class="style-overlay">
+            <div class="style-name">Pompadour</div>
+            <span class="style-tag">Classic</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Taper Fade -->
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="style-card">
+          <img src="images/skin fade.jpg" alt="Taper Fade Hairstyle" style="width:100%; height:100%; object-fit:cover;">
+          <div class="style-overlay">
+            <div class="style-name">Taper Fade</div>
+            <span class="style-tag">Popular</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mid Fade -->
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="style-card">
+          <img src="images/Mid Fade.jpg" alt="Mid Fade Hairstyle" style="width:100%; height:100%; object-fit:cover;">
+          <div class="style-overlay">
+            <div class="style-name">Mid Fade</div>
+            <span class="style-tag">Modern</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Textured Crop -->
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="style-card">
+          <img src="images/Textured Crop.jpg" alt="Textured Crop Hairstyle" style="width:100%; height:100%; object-fit:cover;">
+          <div class="style-overlay">
+            <div class="style-name">Textured Crop</div>
+            <span class="style-tag">Fresh</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Afro Taper -->
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="style-card">
+          <img src="images/Afro Taper.jpg" alt="Afro Taper Hairstyle" style="width:100%; height:100%; object-fit:cover;">
+          <div class="style-overlay">
+            <div class="style-name">Afro Taper</div>
+            <span class="style-tag">Bold</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /row -->
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     ABOUT SECTION
+══════════════════════════════════════════ -->
+<section class="about-section" id="about">
+  <div class="container">
+    <div class="row align-items-center gy-5">
+
+      <!-- Image -->
+      <div class="col-lg-5">
+        <img src="images/salon 2.jpg" alt="TouchTash Barber Shop Team" style="width:100%; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.3);">
+      </div>
+
+      <!-- Text -->
+      <div class="col-lg-6 offset-lg-1">
+        <span class="section-label">Our Story</span>
+        <div class="gold-line left"></div>
+        <h2 class="section-title">More Than a Haircut,<br>It's an Experience</h2>
+        <p class="mb-4" style="color:var(--light-gray); font-size:0.95rem; line-height:1.8;">
+          touchTash was built to bridge the gap between talented local barbers and customers
+          who deserve a seamless, modern booking experience. No more waiting outside, no more
+          phone calls — just clean cuts, on your schedule.
+        </p>
+
+        <div class="about-feature">
+          <div class="about-feature-icon"><i class="bi bi-calendar2-check"></i></div>
+          <div>
+            <h6>Smart Appointment Booking</h6>
+            <p>Real-time availability, instant confirmation, and zero double-bookings.</p>
+          </div>
+        </div>
+
+        <div class="about-feature">
+          <div class="about-feature-icon"><i class="bi bi-cpu"></i></div>
+          <div>
+            <h6>AI Style Recommendations</h6>
+            <p>Our intelligent engine suggests styles based on your face shape and hair type.</p>
+          </div>
+        </div>
+
+        <div class="about-feature">
+          <div class="about-feature-icon"><i class="bi bi-shield-lock"></i></div>
+          <div>
+            <h6>Secure & Reliable</h6>
+            <p>Your data is protected with JWT authentication and encrypted storage.</p>
+          </div>
+        </div>
+
+        <a href="register.html" class="btn btn-gold mt-3">
+          <i class="bi bi-person-plus me-2"></i>Get Started Free
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     TESTIMONIALS SECTION
+══════════════════════════════════════════ -->
+<section class="testimonials-section" id="testimonials">
+  <div class="container">
+
+    <div class="text-center mb-5">
+      <span class="section-label">Client Reviews</span>
+      <div class="gold-line"></div>
+      <h2 class="section-title">What Our Clients Say</h2>
+    </div>
+
+    <div class="row g-4">
+
+      <div class="col-md-6 col-lg-4">
+        <div class="testimonial-card">
+          <div class="quote-icon">"</div>
+          <div class="stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+          <p class="testimonial-text">
+            Booked in 2 minutes, walked in to zero waiting. The style recommendation
+            nailed exactly what I wanted. Best barber experience I've had.
+          </p>
+          <div class="testimonial-author">
+            <div class="author-avatar">KM</div>
+            <div>
+              <span class="author-name">Khaya Mthembu</span>
+              <span class="author-role">Student, DUT</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-4">
+        <div class="testimonial-card">
+          <div class="quote-icon">"</div>
+          <div class="stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+          <p class="testimonial-text">
+            The online booking system is super slick. I can see which barbers are available
+            and pick my favourite. My schedule has never been easier.
+          </p>
+          <div class="testimonial-author">
+            <div class="author-avatar">TN</div>
+            <div>
+              <span class="author-name">Themba Nkosi</span>
+              <span class="author-role">Community Member</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-4">
+        <div class="testimonial-card">
+          <div class="quote-icon">"</div>
+          <div class="stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-half"></i></div>
+          <p class="testimonial-text">
+            As a barber shop owner, touchTash changed how we manage appointments.
+            No more scheduling conflicts and our customers love the digital experience.
+          </p>
+          <div class="testimonial-author">
+            <div class="author-avatar">SZ</div>
+            <div>
+              <span class="author-name">Sipho Zulu</span>
+              <span class="author-role">Barber Shop Owner</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     CONTACT SECTION
+══════════════════════════════════════════ -->
+<section class="contact-section" id="contact">
+  <div class="container">
+
+    <div class="text-center mb-5">
+      <span class="section-label">Get In Touch</span>
+      <div class="gold-line"></div>
+      <h2 class="section-title">Contact Us</h2>
+      <p class="section-subtitle mx-auto">Have a question? Drop us a message and we'll get back to you quickly.</p>
+    </div>
+
+    <div class="row gy-5">
+
+      <!-- Info -->
+      <div class="col-lg-5">
+        <div class="contact-info-item">
+          <div class="contact-icon"><i class="bi bi-geo-alt-fill"></i></div>
+          <div>
+            <h6>Location</h6>
+            <p>Shop 5, Mlazi Plaza, V Section, Mlazi, Durban, 4024</p>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-icon"><i class="bi bi-clock-fill"></i></div>
+          <div>
+            <h6>Operating Hours</h6>
+            <p>Mon – Sat: 08:00 – 18:00 &nbsp;|&nbsp; Sun: 09:00 – 14:00</p>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-icon"><i class="bi bi-telephone-fill"></i></div>
+          <div>
+            <h6>Phone</h6>
+            <p>+27 672858493</p>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-icon"><i class="bi bi-envelope-fill"></i></div>
+          <div>
+            <h6>Email</h6>
+            <p>hello@touchtash.co.za</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <div class="col-lg-7">
+        <form id="contactForm" novalidate>
+          <div class="row g-3">
+            <div class="col-sm-6">
+              <label class="form-label" for="contactName">Full Name</label>
+              <input type="text" class="form-control" id="contactName"
+                     placeholder="Your name" required />
+              <div class="invalid-feedback">Name is required.</div>
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label" for="contactEmail">Email Address</label>
+              <input type="email" class="form-control" id="contactEmail"
+                     placeholder="you@email.com" required />
+              <div class="invalid-feedback">Valid email required.</div>
+            </div>
+            <div class="col-12">
+              <label class="form-label" for="contactSubject">Subject</label>
+              <input type="text" class="form-control" id="contactSubject"
+                     placeholder="How can we help?" required />
+              <div class="invalid-feedback">Subject is required.</div>
+            </div>
+            <div class="col-12">
+              <label class="form-label" for="contactMessage">Message</label>
+              <textarea class="form-control" id="contactMessage" rows="5"
+                        placeholder="Write your message here…" required></textarea>
+              <div class="invalid-feedback">Message is required.</div>
+            </div>
+            <div class="col-12">
+              <button type="submit" class="btn btn-gold w-100">
+                <i class="bi bi-send me-2"></i>Send Message
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     FOOTER
+══════════════════════════════════════════ -->
+<footer class="footer">
+  <div class="container">
+    <div class="row gy-4">
+
+      <div class="col-lg-4">
+        <div class="footer-brand">touch<span>Tash</span></div>
+        <p>A modern, intelligent barber booking platform built to serve communities and empower barbers across South Africa.</p>
+        <div class="social-links">
+          <a href="https://www.instagram.com/touch_tash_barber/" class="social-link"><i class="bi bi-instagram"></i></a>
+          <a href="#" class="social-link"><i class="bi bi-facebook"></i></a>
+          <a href="#" class="social-link"><i class="bi bi-twitter-x"></i></a>
+          <a href="#" class="social-link"><i class="bi bi-whatsapp"></i></a>
+        </div>
+      </div>
+
+      <div class="col-6 col-lg-2 offset-lg-1">
+        <div class="footer-heading">Pages</div>
+        <ul class="footer-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="booking.html">Book Appointment</a></li>
+          <li><a href="login.html">Login</a></li>
+          <li><a href="register.html">Register</a></li>
+          <li><a href="dashboard.html">Dashboard</a></li>
+        </ul>
+      </div>
+
+      <div class="col-6 col-lg-2">
+        <div class="footer-heading">Services</div>
+        <ul class="footer-links">
+          <li><a href="#">Classic Haircut</a></li>
+          <li><a href="#">Skin Fade</a></li>
+          <li><a href="#">Beard Trim</a></li>
+          <li><a href="#">Full Groom</a></li>
+          <li><a href="#">Kids Cut</a></li>
+        </ul>
+      </div>
+
+      <div class="col-lg-3">
+        <div class="footer-heading">Newsletter</div>
+        <p style="font-size:0.84rem;">Get style tips and booking deals straight to your inbox.</p>
+        <div class="input-group mt-2">
+          <input type="email" class="form-control" placeholder="Email address" />
+          <button class="btn btn-gold" style="padding:0.55rem 1rem;">
+            <i class="bi bi-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom d-flex justify-content-between flex-wrap gap-2">
+      <span>&copy; 2025 touchTash. All rights reserved.</span>
+    </div>
+  </div>
+</footer>
+
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- App JS -->
+<script src="js/app.js?v=4"></script>
+
+<!-- CHATBOT FAB -->
+<button class="chatbot-fab" id="chatFab" onclick="toggleChat()">
+  <i class="bi bi-chat-dots-fill"></i>
+  <span class="chat-fab-badge" id="chatFabBadge">1</span>
+</button>
+<div class="chatbot-window" id="chatWindow">
+  <div class="chat-header">
+    <div class="chat-header-left">
+      <div class="chat-avatar-ring">✂</div>
+      <div><div class="chat-name">TashBot</div><div class="chat-status"><span class="online-dot"></span> Online</div></div>
+    </div>
+    <div class="chat-header-right">
+      <button class="chat-icon-btn" onclick="handoffWhatsApp()" title="Continue on WhatsApp"><i class="bi bi-whatsapp"></i></button>
+      <button class="chat-icon-btn" onclick="toggleChat()"><i class="bi bi-x-lg"></i></button>
+    </div>
+  </div>
+  <div class="chat-messages" id="chatMessages"></div>
+  <div class="chat-quick-replies" id="chatQuicks"></div>
+  <div class="chat-input-row">
+    <input type="text" id="chatInput" placeholder="Ask me anything…" onkeydown="if(event.key==='Enter')sendChat()" />
+    <button onclick="sendChat()" class="chat-send-btn"><i class="bi bi-send-fill"></i></button>
+  </div>
+  <div class="chat-footer-note">
+    <i class="bi bi-whatsapp" style="color:#25D366"></i>
+    <a href="#" onclick="handoffWhatsApp();return false">Continue on WhatsApp</a>
+  </div>
+</div>
+<link rel="stylesheet" href="css/dashboard-extra.css"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<script src="js/dashboard-extra.js"></script>
+
+</body>
+</html>

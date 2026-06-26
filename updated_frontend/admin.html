@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel — touchTash</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <style>
+    body { background: #0a0a0a; color: #fff; font-family: 'Segoe UI', sans-serif; }
+    .navbar { background: #111 !important; border-bottom: 1px solid #333; }
+    .btn-gold { background: #c9a84c; color: #000; border: none; padding: 8px 20px; border-radius: 5px; font-weight: bold; }
+    .btn-gold:hover { background: #b8943a; color: #000; }
+    .btn-outline-gold { border: 1px solid #c9a84c; color: #c9a84c; background: transparent; padding: 8px 20px; border-radius: 5px; }
+    .btn-outline-gold:hover { background: #c9a84c; color: #000; }
+    .btn-success-small { background: #28a745; color: #fff; border: none; padding: 4px 10px; border-radius: 4px; font-size: 12px; }
+    .btn-success-small:hover { background: #218838; color: #fff; }
+    .btn-danger-small { background: #dc3545; color: #fff; border: none; padding: 4px 10px; border-radius: 4px; font-size: 12px; }
+    .btn-danger-small:hover { background: #c82333; color: #fff; }
+    .btn-warning-small { background: #ffc107; color: #000; border: none; padding: 4px 10px; border-radius: 4px; font-size: 12px; }
+    .btn-warning-small:hover { background: #e0a800; color: #000; }
+    .card-dark { background: #1a1a1a; border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 1px solid #333; }
+    .stat-card { background: #1a1a1a; border-radius: 12px; padding: 20px; text-align: center; border: 1px solid #333; }
+    .stat-number { font-size: 32px; font-weight: bold; color: #c9a84c; }
+    .table-dark { background: #1a1a1a; color: #fff; }
+    .table-dark td, .table-dark th { border-color: #333; }
+    .nav-tabs .nav-link { color: #aaa; }
+    .nav-tabs .nav-link.active { background: #1a1a1a; color: #c9a84c; border-color: #333 #333 #1a1a1a; }
+    .form-control { background: #2a2a2a; border: 1px solid #444; color: #fff; }
+    .form-control:focus { background: #2a2a2a; border-color: #c9a84c; color: #fff; box-shadow: none; }
+    .badge-status { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+    .badge-status.pending { background: #ffc10720; color: #ffc107; }
+    .badge-status.confirmed { background: #28a74520; color: #28a745; }
+    .badge-status.completed { background: #17a2b820; color: #17a2b8; }
+    .badge-status.cancelled { background: #dc354520; color: #dc3545; }
+    .admin-sidebar { position: fixed; top: 0; left: 0; width: 220px; height: 100vh; background: #111; border-right: 1px solid #333; padding-top: 20px; overflow-y: auto; z-index: 1000; }
+    .admin-main { margin-left: 220px; padding: 20px; }
+    .admin-sidebar a { display: block; padding: 12px 20px; color: #aaa; text-decoration: none; transition: all 0.2s; font-size: 14px; }
+    .admin-sidebar a:hover { background: #1a1a1a; color: #c9a84c; }
+    .admin-sidebar a.active { background: #1a1a1a; color: #c9a84c; border-left: 3px solid #c9a84c; }
+    .admin-sidebar .brand { padding: 12px 20px; font-size: 20px; font-weight: bold; color: #fff; border-bottom: 1px solid #333; margin-bottom: 10px; }
+    .admin-sidebar .brand span { color: #c9a84c; }
+    .admin-sidebar .user-info { padding: 15px 20px; border-bottom: 1px solid #333; margin-bottom: 10px; }
+    @media (max-width: 768px) { .admin-sidebar { width: 100%; height: auto; position: relative; } .admin-main { margin-left: 0; } }
+    .filter-section { background: #1a1a1a; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #333; }
+    .table-responsive { max-height: 500px; overflow-y: auto; }
+    .table-responsive::-webkit-scrollbar { width: 6px; }
+    .table-responsive::-webkit-scrollbar-track { background: #111; }
+    .table-responsive::-webkit-scrollbar-thumb { background: #c9a84c; border-radius: 3px; }
+    .status-filter-badge { cursor: pointer; padding: 5px 15px; border-radius: 20px; font-size: 12px; transition: all 0.2s; border: 2px solid transparent; }
+    .status-filter-badge:hover { transform: scale(1.05); }
+    .status-filter-badge.active-filter { border-color: #c9a84c; }
+    .search-box { position: relative; }
+    .search-box i { position: absolute; top: 12px; left: 12px; color: #666; }
+    .search-box input { padding-left: 35px; }
+    .action-buttons { display: flex; gap: 5px; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="index.html" style="font-size: 24px; font-weight: bold; color: #fff;">touch<span style="color: #c9a84c;">Tash</span></a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav mx-auto">
+        <li class="nav-item"><a class="nav-link" href="admin-dashboard.html" style="color: #aaa;">📊 Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link active" href="admin.html" style="color: #c9a84c;">👑 Admin Panel</a></li>
+      </ul>
+      <div id="navButtons"></div>
+    </div>
+  </div>
+</nav>
+
+<!-- Admin Sidebar -->
+<div class="admin-sidebar">
+  <div class="brand">touch<span>Tash</span></div>
+  <div class="user-info">
+    <div id="adminName" style="color: #fff; font-weight: 600;">Loading...</div>
+    <div style="color: #666; font-size: 12px;">👑 Administrator</div>
+  </div>
+  <!-- ✅ Admin Dashboard Link -->
+  <a href="admin-dashboard.html"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
+  <a href="#" class="active" data-tab="bookings"><i class="bi bi-calendar-check me-2"></i> Bookings</a>
+  <a href="#" data-tab="barbers"><i class="bi bi-people me-2"></i> Barbers</a>
+  <a href="#" data-tab="services"><i class="bi bi-scissors me-2"></i> Services</a>
+  <a href="#" data-tab="reviews"><i class="bi bi-star me-2"></i> Reviews</a>
+  <hr style="border-color: #333; margin: 10px 20px;">
+  <a href="admin-dashboard.html"><i class="bi bi-arrow-left me-2"></i> Back to Dashboard</a>
+  <a href="#" onclick="logout()" style="color: #ff6b6b;"><i class="bi bi-box-arrow-left me-2"></i> Sign Out</a>
+</div>
+
+<!-- Main Content -->
+<div class="admin-main">
+
+  <!-- Bookings Tab -->
+  <div id="tab-bookings" class="tab-content">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2><i class="bi bi-calendar-check me-2 text-warning"></i>All Bookings</h2>
+      <div>
+        <span class="badge bg-secondary me-2" id="bookingCount">0 bookings</span>
+        <button class="btn btn-outline-gold btn-sm" onclick="exportBookings()"><i class="bi bi-download me-1"></i>Export</button>
+      </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="filter-section">
+      <div class="row align-items-center">
+        <div class="col-md-4 mb-2">
+          <div class="search-box">
+            <i class="bi bi-search"></i>
+            <input type="text" id="searchBookings" class="form-control" placeholder="Search by user, service, barber..." onkeyup="applyFilters()">
+          </div>
+        </div>
+        <div class="col-md-3 mb-2">
+          <select id="statusFilter" class="form-control" onchange="applyFilters()">
+            <option value="all">All Status</option>
+            <option value="pending">Pending</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="completed">Completed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+        <div class="col-md-3 mb-2">
+          <input type="date" id="dateFilter" class="form-control" onchange="applyFilters()">
+        </div>
+        <div class="col-md-2 mb-2">
+          <button class="btn btn-outline-gold btn-sm w-100" onclick="resetFilters()"><i class="bi bi-arrow-counterclockwise me-1"></i>Reset</button>
+        </div>
+      </div>
+      <div class="row mt-2">
+        <div class="col-12">
+          <span class="text-muted small">Quick filters:</span>
+          <span class="status-filter-badge" data-status="all" onclick="quickFilter('all')">📊 All</span>
+          <span class="status-filter-badge" data-status="pending" onclick="quickFilter('pending')">⏳ Pending</span>
+          <span class="status-filter-badge" data-status="confirmed" onclick="quickFilter('confirmed')">✅ Confirmed</span>
+          <span class="status-filter-badge" data-status="completed" onclick="quickFilter('completed')">🎯 Completed</span>
+          <span class="status-filter-badge" data-status="cancelled" onclick="quickFilter('cancelled')">❌ Cancelled</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bookings Table -->
+    <div class="card-dark">
+      <div class="table-responsive">
+        <table class="table table-dark" id="bookingsTable">
+          <thead>
+            <tr>
+              <th onclick="sortTable(0)" style="cursor:pointer;">User <i class="bi bi-arrow-up-short"></i></th>
+              <th onclick="sortTable(1)" style="cursor:pointer;">Service <i class="bi bi-arrow-up-short"></i></th>
+              <th onclick="sortTable(2)" style="cursor:pointer;">Barber <i class="bi bi-arrow-up-short"></i></th>
+              <th onclick="sortTable(3)" style="cursor:pointer;">Date <i class="bi bi-arrow-up-short"></i></th>
+              <th onclick="sortTable(4)" style="cursor:pointer;">Time <i class="bi bi-arrow-up-short"></i></th>
+              <th onclick="sortTable(5)" style="cursor:pointer;">Status <i class="bi bi-arrow-up-short"></i></th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="adminBookingsTable">
+            <tr><td colspan="7" class="text-center">Loading bookings...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- Pagination -->
+      <div class="d-flex justify-content-between align-items-center mt-3">
+        <div class="text-muted small" id="paginationInfo">Showing 1-10 of 0</div>
+        <div>
+          <button class="btn btn-sm btn-outline-gold" onclick="changePage(-1)" id="prevPage">Previous</button>
+          <span class="text-muted mx-2" id="currentPageDisplay">Page 1</span>
+          <button class="btn btn-sm btn-outline-gold" onclick="changePage(1)" id="nextPage">Next</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Barbers Tab -->
+  <div id="tab-barbers" class="tab-content" style="display:none;">
+    <h2><i class="bi bi-people me-2 text-warning"></i>Manage Barbers</h2>
+    <p class="text-muted">Add or remove barbers</p>
+    
+    <div class="card-dark">
+      <button class="btn btn-gold mb-3" onclick="showAddBarberModal()"><i class="bi bi-plus-lg me-2"></i>Add Barber</button>
+      <div class="table-responsive">
+        <table class="table table-dark">
+          <thead><tr><th>ID</th><th>Name</th><th>Specialty</th><th>Rating</th><th>Actions</th></tr></thead>
+          <tbody id="barbersTable"><tr><td colspan="5" class="text-center">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Services Tab -->
+  <div id="tab-services" class="tab-content" style="display:none;">
+    <h2><i class="bi bi-scissors me-2 text-warning"></i>Manage Services</h2>
+    <p class="text-muted">Add or remove services</p>
+    
+    <div class="card-dark">
+      <button class="btn btn-gold mb-3" onclick="showAddServiceModal()"><i class="bi bi-plus-lg me-2"></i>Add Service</button>
+      <div class="table-responsive">
+        <table class="table table-dark">
+          <thead><tr><th>ID</th><th>Name</th><th>Price</th><th>Duration</th><th>Actions</th></tr></thead>
+          <tbody id="servicesTable"><tr><td colspan="5" class="text-center">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reviews Tab -->
+  <div id="tab-reviews" class="tab-content" style="display:none;">
+    <h2><i class="bi bi-star me-2 text-warning"></i>All Reviews</h2>
+    <p class="text-muted">View customer feedback</p>
+    
+    <div class="card-dark">
+      <div class="table-responsive">
+        <table class="table table-dark">
+          <thead><tr><th>User</th><th>Barber</th><th>Rating</th><th>Comment</th><th>Date</th></tr></thead>
+          <tbody id="reviewsTable"><tr><td colspan="5" class="text-center">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Barber Modal -->
+<div class="modal fade" id="addBarberModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content bg-dark text-white">
+      <div class="modal-header"><h5>Add Barber</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body">
+        <input type="text" id="barberName" class="form-control mb-2" placeholder="Barber Name">
+        <input type="text" id="barberSpecialty" class="form-control mb-2" placeholder="Specialty">
+        <input type="number" id="barberRating" class="form-control" placeholder="Rating" step="0.1" max="5">
+      </div>
+      <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button class="btn btn-gold" onclick="addBarber()">Add</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Service Modal -->
+<div class="modal fade" id="addServiceModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content bg-dark text-white">
+      <div class="modal-header"><h5>Add Service</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body">
+        <input type="text" id="serviceName" class="form-control mb-2" placeholder="Service Name">
+        <input type="number" id="servicePrice" class="form-control mb-2" placeholder="Price (R)">
+        <input type="number" id="serviceDuration" class="form-control" placeholder="Duration (minutes)">
+      </div>
+      <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button class="btn btn-gold" onclick="addService()">Add</button></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// ============================================
+// ENHANCED ADMIN PANEL WITH CONFIRM & CANCEL
+// ============================================
+
+const API_BASE = 'http://localhost:5000/api';
+let allBookings = [];
+let filteredBookings = [];
+let currentPage = 1;
+const itemsPerPage = 10;
+let sortColumn = 3;
+let sortDirection = 'desc';
+
+function getToken() { return localStorage.getItem('tt_token'); }
+function getUser() { try { return JSON.parse(localStorage.getItem('tt_user')); } catch { return null; } }
+
+// Check admin
+function checkAdmin() {
+    const user = getUser();
+    const token = getToken();
+    
+    if (!token || !user) {
+        window.location.href = 'login.html';
+        return false;
+    }
+    
+    const isAdmin = user.role === 'admin' || user.email === 'admin@touchtash.co.za' || user.email === 'brokenasanda@gmail.com';
+    
+    if (!isAdmin) {
+        alert('Admin access required');
+        window.location.href = 'dashboard.html';
+        return false;
+    }
+    
+    document.getElementById('adminName').textContent = user.full_name || 'Admin User';
+    return true;
+}
+
+function logout() {
+    localStorage.clear();
+    window.location.href = 'login.html';
+}
+
+// Load all bookings
+async function loadAllBookings() {
+    try {
+        const response = await fetch(`${API_BASE}/admin/bookings`, {
+            headers: { 'Authorization': `Bearer ${getToken()}` }
+        });
+        const data = await response.json();
+        allBookings = data.bookings || [];
+        filteredBookings = [...allBookings];
+        applyFilters();
+    } catch (error) {
+        console.error('Error loading bookings:', error);
+        document.getElementById('adminBookingsTable').innerHTML = '<tr><td colspan="7" class="text-center text-danger">Error loading bookings</td></tr>';
+    }
+}
+
+// Apply filters
+function applyFilters() {
+    const search = document.getElementById('searchBookings').value.toLowerCase();
+    const status = document.getElementById('statusFilter').value;
+    const date = document.getElementById('dateFilter').value;
+    
+    filteredBookings = allBookings.filter(b => {
+        let match = true;
+        
+        if (search) {
+            const searchable = `${b.user_name || ''} ${b.service_name || ''} ${b.barber_name || ''}`.toLowerCase();
+            match = match && searchable.includes(search);
+        }
+        
+        if (status !== 'all') {
+            match = match && b.status === status;
+        }
+        
+        if (date) {
+            const bookingDate = new Date(b.booking_date).toISOString().split('T')[0];
+            match = match && bookingDate === date;
+        }
+        
+        return match;
+    });
+    
+    // Sort
+    filteredBookings.sort((a, b) => {
+        let valA, valB;
+        const columns = ['user_name', 'service_name', 'barber_name', 'booking_date', 'booking_time', 'status'];
+        const key = columns[sortColumn] || 'booking_date';
+        
+        valA = a[key] || '';
+        valB = b[key] || '';
+        
+        if (key === 'booking_date') {
+            valA = new Date(valA);
+            valB = new Date(valB);
+        }
+        
+        if (valA < valB) return sortDirection === 'asc' ? -1 : 1;
+        if (valA > valB) return sortDirection === 'asc' ? 1 : -1;
+        return 0;
+    });
+    
+    document.getElementById('bookingCount').textContent = `${filteredBookings.length} bookings`;
+    currentPage = 1;
+    renderTable();
+}
+
+function sortTable(col) {
+    if (sortColumn === col) {
+        sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+        sortColumn = col;
+        sortDirection = 'asc';
+    }
+    applyFilters();
+}
+
+function renderTable() {
+    const tbody = document.getElementById('adminBookingsTable');
+    const start = (currentPage - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const pageItems = filteredBookings.slice(start, end);
+    
+    if (pageItems.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">No bookings found</td></tr>';
+        document.getElementById('paginationInfo').textContent = 'Showing 0 of 0';
+        return;
+    }
+    
+    tbody.innerHTML = pageItems.map(b => `
+        <tr>
+            <td>${b.user_name || b.user_id}</td>
+            <td>${b.service_name}</td>
+            <td>${b.barber_name}</td>
+            <td>${formatDate(b.booking_date)}</td>
+            <td>${formatTime(b.booking_time)}</td>
+            <td><span class="badge-status ${b.status}">${b.status}</span></td>
+            <td>
+                <div class="action-buttons">
+                    ${b.status === 'pending' ? `
+                        <button class="btn btn-success-small" onclick="updateBookingStatus(${b.id}, 'confirmed')" title="Confirm">
+                            <i class="bi bi-check-lg"></i> Confirm
+                        </button>
+                        <button class="btn btn-danger-small" onclick="updateBookingStatus(${b.id}, 'cancelled')" title="Cancel">
+                            <i class="bi bi-x-lg"></i> Cancel
+                        </button>
+                    ` : b.status === 'confirmed' ? `
+                        <button class="btn btn-success-small" onclick="updateBookingStatus(${b.id}, 'completed')" title="Complete">
+                            <i class="bi bi-check2-all"></i> Complete
+                        </button>
+                        <button class="btn btn-danger-small" onclick="updateBookingStatus(${b.id}, 'cancelled')" title="Cancel">
+                            <i class="bi bi-x-lg"></i> Cancel
+                        </button>
+                    ` : b.status === 'completed' ? `
+                        <span class="text-muted small">✓ Completed</span>
+                    ` : `
+                        <span class="text-muted small">✗ Cancelled</span>
+                    `}
+                    <button class="btn btn-danger-small" onclick="deleteBooking(${b.id})" title="Delete">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+    
+    const total = filteredBookings.length;
+    const showing = Math.min(end, total);
+    document.getElementById('paginationInfo').textContent = `Showing ${start + 1}-${showing} of ${total}`;
+    document.getElementById('currentPageDisplay').textContent = `Page ${currentPage}`;
+    document.getElementById('prevPage').disabled = currentPage === 1;
+    document.getElementById('nextPage').disabled = end >= total;
+}
+
+function changePage(delta) {
+    const totalPages = Math.ceil(filteredBookings.length / itemsPerPage);
+    const newPage = currentPage + delta;
+    if (newPage < 1 || newPage > totalPages) return;
+    currentPage = newPage;
+    renderTable();
+}
+
+// ✅ UPDATE BOOKING STATUS - CONFIRM / CANCEL / COMPLETE
+async function updateBookingStatus(id, status) {
+    const statusMessages = {
+        'confirmed': 'confirm',
+        'cancelled': 'cancel',
+        'completed': 'mark as completed'
+    };
+    
+    if (!confirm(`Are you sure you want to ${statusMessages[status] || status} this booking?`)) return;
+    
+    try {
+        const response = await fetch(`${API_BASE}/bookings/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getToken()}`
+            },
+            body: JSON.stringify({ status: status })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            alert(`✅ Booking ${status} successfully!`);
+            loadAllBookings(); // Reload to refresh the table
+        } else {
+            alert(`❌ Failed to ${status} booking: ${data.message || 'Unknown error'}`);
+        }
+    } catch (error) {
+        console.error('Error updating booking:', error);
+        alert('❌ Network error. Please try again.');
+    }
+}
+
+function quickFilter(status) {
+    document.getElementById('statusFilter').value = status;
+    applyFilters();
+    document.querySelectorAll('.status-filter-badge').forEach(b => b.classList.remove('active-filter'));
+    document.querySelector(`.status-filter-badge[data-status="${status}"]`)?.classList.add('active-filter');
+}
+
+function resetFilters() {
+    document.getElementById('searchBookings').value = '';
+    document.getElementById('statusFilter').value = 'all';
+    document.getElementById('dateFilter').value = '';
+    document.querySelectorAll('.status-filter-badge').forEach(b => b.classList.remove('active-filter'));
+    applyFilters();
+}
+
+function formatDate(dateStr) {
+    if (!dateStr) return '—';
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('en-ZA');
+}
+
+function formatTime(timeStr) {
+    if (!timeStr) return '—';
+    return timeStr.substring(0, 5);
+}
+
+function exportBookings() {
+    if (filteredBookings.length === 0) {
+        alert('No bookings to export');
+        return;
+    }
+    
+    let csv = 'User,Service,Barber,Date,Time,Status\n';
+    filteredBookings.forEach(b => {
+        csv += `${b.user_name || ''},${b.service_name},${b.barber_name},${formatDate(b.booking_date)},${formatTime(b.booking_time)},${b.status}\n`;
+    });
+    
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `bookings_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+}
+
+// Load Barbers
+async function loadBarbers() {
+    try {
+        const response = await fetch(`${API_BASE}/barbers`);
+        const barbers = await response.json();
+        const tbody = document.getElementById('barbersTable');
+        if (barbers.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">No barbers found</td></tr>';
+            return;
+        }
+        tbody.innerHTML = barbers.map(b => `
+            <tr>
+                <td>${b.id}</td>
+                <td>${b.barber_name}</td>
+                <td>${b.specialty || '-'}</td>
+                <td>${b.rating || '-'}</td>
+                <td><button class="btn btn-sm btn-danger" onclick="deleteBarber(${b.id})"><i class="bi bi-trash"></i></button></td>
+            </tr>
+        `).join('');
+    } catch (error) {
+        console.error('Error loading barbers:', error);
+    }
+}
+
+// Load Services
+async function loadServices() {
+    try {
+        const response = await fetch(`${API_BASE}/services`);
+        const services = await response.json();
+        const tbody = document.getElementById('servicesTable');
+        if (services.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">No services found</td></tr>';
+            return;
+        }
+        tbody.innerHTML = services.map(s => `
+            <tr>
+                <td>${s.id}</td>
+                <td>${s.service_name}</td>
+                <td>R${s.price}</td>
+                <td>${s.duration_minutes}min</td>
+                <td><button class="btn btn-sm btn-danger" onclick="deleteService(${s.id})"><i class="bi bi-trash"></i></button></td>
+            </tr>
+        `).join('');
+    } catch (error) {
+        console.error('Error loading services:', error);
+    }
+}
+
+// Load Reviews
+async function loadReviews() {
+    try {
+        const response = await fetch(`${API_BASE}/reviews`);
+        const data = await response.json();
+        const reviews = data.reviews || [];
+        const tbody = document.getElementById('reviewsTable');
+        if (reviews.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">No reviews yet</td></tr>';
+            return;
+        }
+        tbody.innerHTML = reviews.map(r => `
+            <tr>
+                <td>${r.user_name || 'Anonymous'}</td>
+                <td>${r.barber_name}</td>
+                <td>${'⭐'.repeat(Math.min(5, r.rating || 0))}</td>
+                <td>${r.comment || '-'}</td>
+                <td>${new Date(r.created_at).toLocaleDateString()}</td>
+            </tr>
+        `).join('');
+    } catch (error) {
+        console.error('Error loading reviews:', error);
+    }
+}
+
+// CRUD Operations
+async function deleteBooking(id) {
+    if (!confirm('Delete this booking permanently?')) return;
+    try {
+        await fetch(`${API_BASE}/admin/bookings/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${getToken()}` }
+        });
+        alert('✅ Booking deleted');
+        loadAllBookings();
+    } catch (error) {
+        alert('❌ Error deleting booking');
+    }
+}
+
+async function addBarber() {
+    const name = document.getElementById('barberName').value.trim();
+    const specialty = document.getElementById('barberSpecialty').value.trim();
+    const rating = document.getElementById('barberRating').value;
+    if (!name) { alert('Barber name required'); return; }
+    try {
+        await fetch(`${API_BASE}/admin/barbers`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getToken()}`
+            },
+            body: JSON.stringify({ barber_name: name, specialty, rating: rating || 4.5 })
+        });
+        alert('✅ Barber added');
+        bootstrap.Modal.getInstance(document.getElementById('addBarberModal')).hide();
+        loadBarbers();
+    } catch (error) {
+        alert('❌ Error adding barber');
+    }
+}
+
+async function deleteBarber(id) {
+    if (!confirm('Delete this barber?')) return;
+    try {
+        await fetch(`${API_BASE}/admin/barbers/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${getToken()}` }
+        });
+        alert('✅ Barber deleted');
+        loadBarbers();
+    } catch (error) {
+        alert('❌ Error deleting barber');
+    }
+}
+
+async function addService() {
+    const name = document.getElementById('serviceName').value.trim();
+    const price = document.getElementById('servicePrice').value;
+    const duration = document.getElementById('serviceDuration').value;
+    if (!name || !price) { alert('Name and price required'); return; }
+    try {
+        await fetch(`${API_BASE}/admin/services`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getToken()}`
+            },
+            body: JSON.stringify({ service_name: name, price: parseInt(price), duration_minutes: duration || 30 })
+        });
+        alert('✅ Service added');
+        bootstrap.Modal.getInstance(document.getElementById('addServiceModal')).hide();
+        loadServices();
+    } catch (error) {
+        alert('❌ Error adding service');
+    }
+}
+
+async function deleteService(id) {
+    if (!confirm('Delete this service?')) return;
+    try {
+        await fetch(`${API_BASE}/admin/services/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${getToken()}` }
+        });
+        alert('✅ Service deleted');
+        loadServices();
+    } catch (error) {
+        alert('❌ Error deleting service');
+    }
+}
+
+function showAddBarberModal() {
+    new bootstrap.Modal(document.getElementById('addBarberModal')).show();
+}
+
+function showAddServiceModal() {
+    new bootstrap.Modal(document.getElementById('addServiceModal')).show();
+}
+
+// Tab switching
+document.querySelectorAll('.admin-sidebar a[data-tab]').forEach(tab => {
+    tab.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelectorAll('.admin-sidebar a[data-tab]').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+        const tabName = this.dataset.tab;
+        document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+        document.getElementById(`tab-${tabName}`).style.display = 'block';
+        if (tabName === 'barbers') loadBarbers();
+        if (tabName === 'services') loadServices();
+        if (tabName === 'reviews') loadReviews();
+        if (tabName === 'bookings') loadAllBookings();
+    });
+});
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+    if (checkAdmin()) {
+        loadAllBookings();
+        loadBarbers();
+        loadServices();
+        loadReviews();
+    }
+});
+</script>
+</body>
+</html>

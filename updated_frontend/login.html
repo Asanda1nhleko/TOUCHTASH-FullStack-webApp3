@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In — touchTash</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <style>
+    :root {
+      --gold: #c9a84c;
+      --dark-bg: #0a0a0a;
+      --card-bg: #1a1a1a;
+      --light-gray: #888;
+    }
+    body {
+      background: var(--dark-bg);
+      color: #fff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .auth-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 40px;
+      border: 1px solid #333;
+      max-width: 420px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    .auth-logo {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .auth-logo .brand {
+      font-size: 28px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .auth-logo .brand span {
+      color: var(--gold);
+    }
+    .auth-logo p {
+      color: var(--light-gray);
+      font-size: 13px;
+      margin-top: 5px;
+    }
+    .auth-title {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: #fff;
+    }
+    .auth-subtitle {
+      color: var(--light-gray);
+      font-size: 14px;
+      margin-bottom: 25px;
+    }
+    .btn-gold {
+      background: var(--gold);
+      color: #000;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-weight: bold;
+      transition: all 0.2s;
+    }
+    .btn-gold:hover {
+      background: #b8943a;
+      color: #000;
+    }
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid #333;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-weight: bold;
+      transition: all 0.2s;
+    }
+    .btn-ghost:hover {
+      background: #333;
+      color: #fff;
+    }
+    .form-control {
+      background: #2a2a2a;
+      border: 1px solid #444;
+      color: #fff;
+      border-radius: 8px;
+      padding: 12px 14px;
+    }
+    .form-control:focus {
+      background: #2a2a2a;
+      border-color: var(--gold);
+      color: #fff;
+      box-shadow: none;
+    }
+    .form-control::placeholder {
+      color: #666;
+    }
+    .form-label {
+      color: #aaa;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 5px;
+    }
+    .input-group-text {
+      background: #2a2a2a;
+      border: 1px solid #444;
+      color: #888;
+      cursor: pointer;
+      border-radius: 0 8px 8px 0 !important;
+    }
+    .input-group-text:hover {
+      color: var(--gold);
+    }
+    .form-check-input {
+      background-color: #2a2a2a;
+      border-color: #444;
+    }
+    .form-check-input:checked {
+      background-color: var(--gold);
+      border-color: var(--gold);
+    }
+    .form-check-label {
+      color: #aaa;
+      font-size: 13px;
+    }
+    .auth-divider {
+      display: flex;
+      align-items: center;
+      margin: 20px 0;
+      color: #444;
+    }
+    .auth-divider::before,
+    .auth-divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid #333;
+    }
+    .auth-divider span {
+      padding: 0 15px;
+      font-size: 13px;
+      color: var(--light-gray);
+    }
+    .text-gold {
+      color: var(--gold);
+    }
+    .text-muted {
+      color: var(--light-gray) !important;
+    }
+    #toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+    }
+    .toast-custom {
+      background: var(--card-bg);
+      border: 1px solid #333;
+      color: #fff;
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      min-width: 300px;
+      animation: slideIn 0.3s ease;
+    }
+    .toast-custom.success {
+      border-left: 4px solid #28a745;
+    }
+    .toast-custom.error {
+      border-left: 4px solid #dc3545;
+    }
+    .toast-custom.info {
+      border-left: 4px solid var(--gold);
+    }
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    .spinner-border-sm {
+      width: 1rem;
+      height: 1rem;
+      border-width: 0.2em;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-12 col-sm-10 col-md-8 col-lg-5">
+
+      <div class="auth-card">
+
+        <!-- Logo -->
+        <div class="auth-logo">
+          <div class="brand">touch<span>Tash</span></div>
+          <p>Intelligent Barber Booking Platform</p>
+        </div>
+
+        <h2 class="auth-title">Welcome Back</h2>
+        <p class="auth-subtitle">Sign in to manage your appointments.</p>
+
+        <!-- Login Form -->
+        <form id="loginForm" novalidate>
+
+          <!-- Email -->
+          <div class="mb-3">
+            <label class="form-label" for="loginEmail">Email Address</label>
+            <input
+              type="email"
+              class="form-control"
+              id="loginEmail"
+              name="email"
+              placeholder="you@email.com"
+              required
+              autocomplete="email"
+              value="admin@touchtash.co.za"
+            />
+            <div class="invalid-feedback">Please enter a valid email address.</div>
+          </div>
+
+          <!-- Password -->
+          <div class="mb-3">
+            <label class="form-label" for="password">Password</label>
+            <div class="input-group">
+              <input
+                type="password"
+                class="form-control"
+                id="password"
+                name="password"
+                placeholder="Enter your password"
+                required
+                autocomplete="current-password"
+                value="admin123"
+                style="border-radius: 8px 0 0 8px !important;"
+              />
+              <span class="input-group-text" id="togglePassword" title="Show/hide password">
+                <i class="bi bi-eye"></i>
+              </span>
+            </div>
+            <div class="invalid-feedback">Password is required.</div>
+          </div>
+
+          <!-- Remember me / Forgot password -->
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="rememberMe" />
+              <label class="form-check-label" for="rememberMe">Remember me</label>
+            </div>
+            <a href="#" style="font-size:0.82rem; color:var(--gold);">Forgot password?</a>
+          </div>
+
+          <!-- Submit -->
+          <button type="submit" class="btn btn-gold w-100 mb-3" id="loginBtn">
+            <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+          </button>
+
+          <!-- Divider -->
+          <div class="auth-divider"><span>Don't have an account?</span></div>
+
+          <!-- Register link -->
+          <a href="register.html" class="btn btn-ghost w-100 mt-3">
+            Create a Free Account
+          </a>
+
+        </form>
+      </div>
+
+      <!-- Back to home -->
+      <div class="text-center mt-3">
+        <a href="index.html" style="font-size:0.82rem; color:var(--light-gray);">
+          <i class="bi bi-arrow-left me-1"></i>Back to Home
+        </a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// ============================================
+// LOGIN PAGE - FULLY WORKING
+// ============================================
+
+const API_BASE = 'http://localhost:5000/api';
+
+// ===== TOAST NOTIFICATIONS =====
+function showToast(message, type = 'info') {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = `toast-custom ${type}`;
+  toast.innerHTML = message;
+  container.appendChild(toast);
+  setTimeout(() => { toast.remove(); }, 5000);
+}
+
+// ===== TOGGLE PASSWORD VISIBILITY =====
+document.getElementById('togglePassword').addEventListener('click', function() {
+  const passwordInput = document.getElementById('password');
+  const icon = this.querySelector('i');
+  if (passwordInput.type === 'password') {
+    passwordInput.type = 'text';
+    icon.className = 'bi bi-eye-slash';
+  } else {
+    passwordInput.type = 'password';
+    icon.className = 'bi bi-eye';
+  }
+});
+
+// ===== LOGIN FORM SUBMIT =====
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('password').value.trim();
+  const loginBtn = document.getElementById('loginBtn');
+  const errorMsg = document.getElementById('errorMsg');
+  
+  // Validate
+  if (!email || !password) {
+    showToast('Please fill in all fields', 'error');
+    return;
+  }
+  
+  // Show loading state
+  loginBtn.disabled = true;
+  loginBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Signing in...';
+  
+  try {
+    const response = await fetch(`${API_BASE}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    
+    const data = await response.json();
+    
+    if (response.ok) {
+      // Store token and user data
+      localStorage.setItem('tt_token', data.token);
+      localStorage.setItem('tt_user', JSON.stringify(data.user));
+      
+      showToast('✅ Login successful! Redirecting...', 'success');
+      
+      // Redirect based on role
+      setTimeout(() => {
+        if (data.user.role === 'admin' || data.user.email === 'admin@touchtash.co.za') {
+          window.location.href = 'admin-dashboard.html';
+        } else {
+          window.location.href = 'dashboard.html';
+        }
+      }, 1000);
+      
+    } else {
+      showToast('❌ ' + (data.error || 'Login failed. Please check your credentials.'), 'error');
+      loginBtn.disabled = false;
+      loginBtn.innerHTML = '<i class="bi bi-box-arrow-in-right me-2"></i>Sign In';
+    }
+    
+  } catch (error) {
+    console.error('Login error:', error);
+    showToast('❌ Network error: ' + error.message, 'error');
+    loginBtn.disabled = false;
+    loginBtn.innerHTML = '<i class="bi bi-box-arrow-in-right me-2"></i>Sign In';
+  }
+});
+
+// ===== CHECK IF ALREADY LOGGED IN =====
+document.addEventListener('DOMContentLoaded', function() {
+  const token = localStorage.getItem('tt_token');
+  const user = localStorage.getItem('tt_user');
+  
+  if (token && user) {
+    try {
+      const userData = JSON.parse(user);
+      // If already logged in, redirect to appropriate dashboard
+      if (userData.role === 'admin' || userData.email === 'admin@touchtash.co.za') {
+        window.location.href = 'admin-dashboard.html';
+      } else {
+        window.location.href = 'dashboard.html';
+      }
+    } catch (e) {
+      // Invalid user data, clear and stay on login
+      localStorage.clear();
+    }
+  }
+});
+</script>
+
+</body>
+</html>
